@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Image, ImageBackground, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, Button, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, get, set } from 'firebase/database';
 import { getStorage, uploadBytes, getDownloadURL, ref as sRef } from 'firebase/storage';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 
 const ProfileEdit: React.FC = () => {
   const [dateOfBirth, setDateOfBirth] = useState<string>('');
@@ -86,8 +87,12 @@ const ProfileEdit: React.FC = () => {
       const storageRef = sRef(storage, `profilePictures/${user.uid}`);
       const response = await fetch(imageUri);
       const blob = await response.blob();
+      console.log("Uploading image to Firebase Storage...");
       await uploadBytes(storageRef, blob);
+      console.log("Image uploaded successfully");
+
       const downloadURL = await getDownloadURL(storageRef);
+      console.log("Download URL:", downloadURL);
       setProfilePicture(downloadURL);
 
       const db = getDatabase();
@@ -101,8 +106,7 @@ const ProfileEdit: React.FC = () => {
       }
 
       await set(userRef, { ...existingUserData, profilePicture: downloadURL });
-
-      console.log("Profile picture uploaded successfully");
+      console.log("Profile picture updated successfully in database");
     } catch (error) {
       console.error("Error uploading profile picture:", error);
     } finally {
@@ -111,9 +115,16 @@ const ProfileEdit: React.FC = () => {
   };
 
   const selectImage = async () => {
-    // Use ImagePicker or similar library to select image
-    // For example: const result = await ImagePicker.launchImageLibraryAsync();
-    // handleImageChange(result.uri);
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      handleImageChange(result.assets[0].uri);
+    }
   };
 
   return (
@@ -173,7 +184,7 @@ const ProfileEdit: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 16,
   },
   backButton: {
