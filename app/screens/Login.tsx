@@ -70,11 +70,10 @@ const Login = () => {
 
   return (
     <ImageBackground
-      source={require('./images/new.jpg')} // Replace with the path to your image
+      source={require('./images/BG2.jpg')} // Replace with the path to your image
       style={styles.backgroundImage}
     >
       <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <Header />
         <View style={styles.mainContainer}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -107,7 +106,6 @@ const Login = () => {
             )}
           </View>
         </View>
-        <Footer />
       </KeyboardAvoidingView>
     </ImageBackground>
   );
