@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image } from 'react-native';
 import { auth } from '../../FirebaseConfig';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
@@ -70,44 +70,53 @@ const Login = () => {
 
   return (
     <ImageBackground
-      source={require('./images/new.jpg')} // Replace with the path to your image
+      source={require('./images/BG2.png')} // Replace with the path to your image
       style={styles.backgroundImage}
     >
       <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <Header />
+        <View style={styles.imageContainer}>
+          <Image
+            source={require('./images/header.png')} // Replace with the path to your image
+            style={styles.logoImage}
+          />
+        </View>
         <View style={styles.mainContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              style={styles.input}
-            />
-            <View style={styles.passwordContainer}>
+          <View style={styles.transparentContainer}>
+          <Text style={styles.logintopic}>LOGIN</Text>
+            <View style={styles.inputContainer}>
               <TextInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                style={[styles.input, styles.passwordInput]}
-                secureTextEntry={!showPassword}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                style={styles.input}
               />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Text style={styles.showPasswordText}>{showPassword ? 'Hide' : 'Show'}</Text>
-              </TouchableOpacity>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  placeholder="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  style={[styles.input, styles.passwordInput]}
+                  secureTextEntry={!showPassword}
+                />
+              </View>
+              <View style={styles.buttoncontainer}>
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                  <Text style={styles.showPasswordText}>{showPassword ? 'Hide' : 'Show'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleForgotPassword}>
+                  <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                </TouchableOpacity>
+              </View>
+              {loading ? (
+                <ActivityIndicator size="large" color="#0000ff" />
+              ) : (
+                <TouchableOpacity onPress={signIn} style={styles.button}>
+                  <Text style={styles.buttonText}>Log In</Text>
+                </TouchableOpacity>
+              )}
             </View>
-            <TouchableOpacity onPress={handleForgotPassword}>
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-            {loading ? (
-              <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-              <TouchableOpacity onPress={signIn} style={styles.button}>
-                <Text style={styles.buttonText}>Log In</Text>
-              </TouchableOpacity>
-            )}
           </View>
         </View>
-        <Footer />
       </KeyboardAvoidingView>
     </ImageBackground>
   );
@@ -122,7 +131,18 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Slightly transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Slightly transparent background
+    borderColor:'white',
+  },
+  imageContainer: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+  },
+  logoImage: {
+    width: 200,
+    height: 150,
+    resizeMode: 'contain',
   },
   mainContainer: {
     flex: 1,
@@ -130,19 +150,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
   },
+  transparentContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Slightly transparent container
+    padding: 20,
+    borderRadius: 10,
+    width: '90%',
+    maxWidth: 400,
+    alignItems: 'center',
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+  logintopic :{
+    fontSize: 40,
+    color:'white',
+  },
+  
   inputContainer: {
     width: '100%',
     alignItems: 'center',
+    marginTop: 50,
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
+    borderColor: '#ccc',
+    borderWidth: 1,
     width: '100%',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    borderRadius: 10,
+    borderRadius: 25,
     marginTop: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    color: '#ffff', // Change text color if needed
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -153,19 +190,29 @@ const styles = StyleSheet.create({
   passwordInput: {
     flex: 1,
   },
+
+  buttoncontainer :{
+  },
   showPasswordText: {
-    color: '#0782F9',
+    color: '#ccc',
     marginLeft: 10,
+    position:'relative',
+    top:21,
+    backgroundColor:'blue'
   },
   forgotPasswordText: {
-    color: '#0782F9',
-    marginTop: 10,
+    color: '#ccc',
+    marginTop: 15,
+    position:'relative',
+    left:230,
+    top:-10,
+    
   },
   button: {
-    backgroundColor: '#054AAB',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // New button color
     width: '100%',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 25,
     alignItems: 'center',
     marginTop: 20,
   },
