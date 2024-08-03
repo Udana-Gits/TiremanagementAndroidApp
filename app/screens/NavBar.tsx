@@ -129,7 +129,7 @@ const Navbar: React.FC<Props> = ({ authuser }) => {
 
 const styles = StyleSheet.create({
   navbar: {
-    backgroundColor: '#054AAB',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     padding: 10,
   },
   container: {

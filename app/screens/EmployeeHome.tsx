@@ -26,6 +26,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'EmployeeHome'>;
 
 const EmployeeHome: React.FC<Props> = ({ navigation }) => {
   const [authuser, setAuthUser] = useState<AuthUser | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchAuthUser = async () => {
@@ -50,21 +51,22 @@ const EmployeeHome: React.FC<Props> = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require('./images/new.jpg')} // Replace with the path to your image
+      source={require('./images/BG2.png')} // Replace with the path to your image
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Header />
-        <Navbar authuser={authuser} />
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EnterData')}>
-            <Text style={styles.buttonText}>Enter Tire Data</Text>
-          </TouchableOpacity>
-          <View style={styles.gap} />
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ViewData')}>
-            <Text style={styles.buttonText}>View Tire Data</Text>
-          </TouchableOpacity>
+        <Header isDarkMode={isDarkMode} />
+        <View style={styles.mainContent}>
+          <Navbar authuser={authuser} />
         </View>
+        <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EnterData')}>
+              <Text style={styles.buttonText}>Enter Tire Data</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ViewData')}>
+              <Text style={styles.buttonText}>View Tire Data</Text>
+            </TouchableOpacity>
+          </View>
         <Footer />
       </View>
     </ImageBackground>
@@ -74,29 +76,33 @@ const EmployeeHome: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Slightly transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Slightly transparent background
   },
   backgroundImage: {
     flex: 1,
   },
-  buttonContainer: {
+  mainContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center', // Center content vertically within the available space
+  },
+  buttonContainer: {
+    flexDirection: 'row', // Arrange buttons in a row
+    justifyContent: 'center', // Center buttons horizontally
+    alignItems: 'center', // Align items in the center of the row
   },
   button: {
-    backgroundColor: '#054AAB', // Button color
-    paddingVertical: 15, // Vertical padding for height
-    paddingHorizontal: 150, // Horizontal padding for width
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Button color
+    paddingVertical: 15, 
+    paddingHorizontal: 30, 
     borderRadius: 5,
+    height: 90,
+    width: 90,
     alignItems: 'center',
+    marginHorizontal: 10, // Space between buttons
   },
   buttonText: {
     color: '#fff', // Text color
     fontSize: 16, // Font size
-  },
-  gap: {
-    height: 20,
   },
 });
 
