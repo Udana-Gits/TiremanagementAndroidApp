@@ -14,10 +14,10 @@ const Footer: React.FC = () => {
 
   return (
     <View style={styles.footerContainer}>
-        <Text style={styles.footerText1}>Pavara Tire management System</Text>
-      <Text style={styles.footerText}>
+      <Text style={styles.footerTime}>
         {currentTime.toLocaleDateString()} {currentTime.toLocaleTimeString()}
       </Text>
+      <Text style={styles.footerText}>Pavara Tire management System</Text>
     </View>
   );
 };
@@ -25,14 +25,14 @@ const Footer: React.FC = () => {
 const styles = StyleSheet.create({
   footerContainer: {
     padding: 10,
-    backgroundColor: '#054AAB',
+    
     alignItems: 'center',
   },
-  footerText: {
+  footerTime: {
     fontSize: 16,
     color: 'white',
   },
-  footerText1: {
+  footerText: {
     fontSize: 20,
     color: 'white',
   },
