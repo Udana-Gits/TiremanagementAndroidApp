@@ -21,7 +21,6 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const navigation = useNavigation<LoginScreenNavigationProp>();
-  
 
   const signIn = async () => {
     setLoading(true);
@@ -74,14 +73,14 @@ const Login: React.FC = () => {
       source={require('./images/BG2.png')} // Replace with the path to your image
       style={styles.backgroundImage}
     >
-      <KeyboardAvoidingView style={[styles.container, isDarkMode ? styles.darkcontainer : styles.lightcontainer]}behavior="padding">
+      <KeyboardAvoidingView style={[styles.container, isDarkMode ? styles.darkcontainer : styles.lightcontainer]} behavior="padding">
         <View style={styles.headerContainer}>
           <Image
-            source={ isDarkMode ? require('./images/header.png') : require('./images/header1.png') } // Replace with the path to your image
+            source={isDarkMode ? require('./images/header.png') : require('./images/header1.png')} // Replace with the path to your image
             style={styles.logoImage}
           />
-          <View  style={styles.togglebutton}>
-           <CustomSwitch value={isDarkMode} onValueChange={setIsDarkMode} />
+          <View style={styles.togglebutton}>
+            <CustomSwitch value={isDarkMode} onValueChange={setIsDarkMode} />
           </View>
         </View>
         <View style={styles.mainContainer}>
@@ -93,7 +92,7 @@ const Login: React.FC = () => {
                 value={email}
                 onChangeText={setEmail}
                 style={[styles.input, isDarkMode ? styles.darkTextInput : styles.lightTextInput]}
-                placeholderTextColor={isDarkMode ? "#999" : "#ccc"}
+                placeholderTextColor={isDarkMode ? "#999" : "black"}
               />
               <View style={styles.passwordContainer}>
                 <TextInput
@@ -102,7 +101,7 @@ const Login: React.FC = () => {
                   onChangeText={setPassword}
                   style={[styles.input, styles.passwordInput, isDarkMode ? styles.darkTextInput : styles.lightTextInput]}
                   secureTextEntry={!showPassword}
-                  placeholderTextColor={isDarkMode ? "#999" : "#ccc"}
+                  placeholderTextColor={isDarkMode ? "#999" : "black"}
                 />
               </View>
               <View style={styles.buttoncontainer}>
@@ -155,10 +154,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  togglebutton:{
+  togglebutton: {
     position: 'absolute',
     top: 50,
-    left:370,
+    left: 370,
   },
   logoImage: {
     width: 250,
@@ -238,7 +237,7 @@ const styles = StyleSheet.create({
   showPasswordText: {
     color: '#ccc',
     marginLeft: 10,
-    marginTop:10,
+    marginTop: 10,
   },
   forgotPasswordText: {
     color: '#ccc',
@@ -253,20 +252,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   darkbutton: {
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // New button color
+    backgroundColor: '#999',
   },
   lightbutton: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)', // New button color
+    backgroundColor: 'black',
   },
   buttonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
+    fontSize: 18,
   },
   darkbuttonText: {
-    color: 'white',
+    color: 'black',
   },
   lightbuttonText: {
-    color: 'black',
+    color: 'white',
   },
 });

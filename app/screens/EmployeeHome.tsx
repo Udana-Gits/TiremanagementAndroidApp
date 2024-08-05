@@ -84,11 +84,14 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     justifyContent: 'center', // Center content vertically within the available space
+    display:'flex',
+    top:-250,
   },
   buttonContainer: {
     flexDirection: 'row', // Arrange buttons in a row
     justifyContent: 'center', // Center buttons horizontally
     alignItems: 'center', // Align items in the center of the row
+    display:'flex'
   },
   button: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Button color
