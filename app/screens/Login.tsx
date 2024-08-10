@@ -6,6 +6,8 @@ import { getDatabase, ref, get } from 'firebase/database';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import CustomSwitch from './CustomSwitch';
+import { useDarkMode } from './DarkModeContext';
+
 
 type RootStackParamList = {
   DriverHome: undefined;
@@ -19,8 +21,8 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const navigation = useNavigation<LoginScreenNavigationProp>();
+  const { isDarkMode, setIsDarkMode } = useDarkMode();
 
   const signIn = async () => {
     setLoading(true);

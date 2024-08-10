@@ -9,6 +9,8 @@ import EnterData from './app/screens/EnterData';
 import ViewData from './app/screens/ViewData';
 import ViewVehicle from './app/screens/ViewVehicle';
 import ProfileEdit from './app/screens/ProfileEdit';
+import { DarkModeProvider } from './app/screens/DarkModeContext';
+
 
 
 type RootStackParamList = {
@@ -25,17 +27,19 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-        <Stack.Screen options={{ headerShown: false }} name="DriverHome" component={DriverHome} />
-        <Stack.Screen options={{ headerShown: false }} name="EmployeeHome" component={EmployeeHome} />
-        <Stack.Screen options={{ headerShown: false }} name="EnterData" component={EnterData} />
-        <Stack.Screen options={{ headerShown: false }} name="ViewData" component={ViewData} />
-        <Stack.Screen options={{ headerShown: false }} name="ViewVehicle" component={ViewVehicle} />
-        <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <DarkModeProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+          <Stack.Screen options={{ headerShown: false }} name="DriverHome" component={DriverHome} />
+          <Stack.Screen options={{ headerShown: false }} name="EmployeeHome" component={EmployeeHome} />
+          <Stack.Screen options={{ headerShown: false }} name="EnterData" component={EnterData} />
+          <Stack.Screen options={{ headerShown: false }} name="ViewData" component={ViewData} />
+          <Stack.Screen options={{ headerShown: false }} name="ViewVehicle" component={ViewVehicle} />
+          <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </DarkModeProvider>
   );
 }
 

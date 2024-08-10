@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ccc', // Thumb background color
     position: 'absolute',
-    top: 0,
+    top: 0.525,
   },
   icon: {
     width: 18,
