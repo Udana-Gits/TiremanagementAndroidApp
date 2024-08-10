@@ -136,7 +136,6 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
       source={require('./images/new1.jpg')} // Replace with the path to your image
       style={styles.backgroundImage}
     >
-      <Header/>
       <View style={styles.container}>
         
         {authUser ? (

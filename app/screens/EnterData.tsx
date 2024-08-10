@@ -1,8 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, Modal, StyleSheet, ImageBackground } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  Modal,
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
 import { db } from '../../FirebaseConfig';
 import { ref, set } from 'firebase/database';
 import { Picker } from '@react-native-picker/picker';
+import { useDarkMode } from './DarkModeContext';
+
+type VehicleType =
+  | 'Prime Mover'
+  | 'Terminal Transport'
+  | 'Prime Mover Internal'
+  | 'Internal Transport'
+  | 'Small Forklift'
+  | 'Rings Tractor'
+  | 'Rubber Tire Granty Crane';
+type TireOption = string;
 
 const EnterData = () => {
   const [tireNo, setTireNo] = useState('');
@@ -10,10 +33,10 @@ const EnterData = () => {
   const [tyrePressure, setTyrePressure] = useState('');
   const [kmReading, setKmReading] = useState('');
   const [threadDepth, setThreadDepth] = useState('');
-  const [selectedOption, setSelectedOption] = useState('');
-  const [selectedOption1, setSelectedOption1] = useState('');
-  const [selectedOption2, setSelectedOption2] = useState('');
-  const [selectedOption3, setSelectedOption3] = useState('');
+  const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType | ''>('');
+  const [selectedOption1, setSelectedOption1] = useState<TireOption>('');
+  const [selectedOption2, setSelectedOption2] = useState<TireOption>('');
+  const [selectedOption3, setSelectedOption3] = useState<TireOption>('');
   const [date, setDate] = useState(new Date().toLocaleString('en-US', {
     year: 'numeric',
     month: '2-digit',
@@ -21,27 +44,43 @@ const EnterData = () => {
   }));
   const [showPopup, setShowPopup] = useState(false);
   const [enteredData, setEnteredData] = useState('');
+  const { isDarkMode } = useDarkMode();
 
-  const handleSelectChange1 = (itemValue: string) => {
+
+  const handleVehicleSelect = (vehicleType: VehicleType) => {
+    setSelectedVehicleType(vehicleType);
+  };
+
+  const handleSelectChange1 = (itemValue: TireOption) => {
     setSelectedOption1(itemValue);
   };
 
-  const handleSelectChange2 = (itemValue: string) => {
+  const handleSelectChange2 = (itemValue: TireOption) => {
     setSelectedOption2(itemValue);
   };
 
-  const handleSelectChange3 = (itemValue: string) => {
+  const handleSelectChange3 = (itemValue: TireOption) => {
     setSelectedOption3(itemValue);
   };
 
   const handleFormSubmit = () => {
-    if (!tireNo || !vehicleNo || !tyrePressure || !threadDepth || !selectedOption || !selectedOption1 || !selectedOption2 || !selectedOption3 || !kmReading) {
+    if (
+      !tireNo ||
+      !vehicleNo ||
+      !tyrePressure ||
+      !threadDepth ||
+      !selectedVehicleType ||
+      !selectedOption1 ||
+      !selectedOption2 ||
+      !selectedOption3 ||
+      !kmReading
+    ) {
       Alert.alert('Please fill in all required fields');
       return;
     }
 
     const enteredData = `
-      Vehicle Type: ${selectedOption}\n
+      Vehicle Type: ${selectedVehicleType}\n
       Vehicle Number: ${vehicleNo}\n
       Tire Serial Number: ${tireNo}\n
       Km Reading: ${kmReading}\n
@@ -63,7 +102,7 @@ const EnterData = () => {
       tyrePressure: tyrePressure,
       threadDepth: threadDepth,
       kmReading: kmReading,
-      vehicleType: selectedOption,
+      vehicleType: selectedVehicleType,
       TirePosition: selectedOption1,
       tirestatus: selectedOption2,
       tirebrand: selectedOption3,
@@ -77,14 +116,14 @@ const EnterData = () => {
         hour12: true,
       }),
     })
-    .then(() => {
-      Alert.alert('Data entered successfully!');
-      setShowPopup(false);
-    })
-    .catch((error) => {
-      Alert.alert('Error entering data', error.message);
-      setShowPopup(false);
-    });
+      .then(() => {
+        Alert.alert('Data entered successfully!');
+        setShowPopup(false);
+      })
+      .catch((error) => {
+        Alert.alert('Error entering data', error.message);
+        setShowPopup(false);
+      });
   };
 
   const handlePopupCancel = () => {
@@ -92,126 +131,204 @@ const EnterData = () => {
   };
 
   return (
-    <ImageBackground source={require('./images/new.jpg')}style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.header}>Enter Data</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Vehicle Type:</Text>
-          <Picker
-            selectedValue={selectedOption}
-            onValueChange={(itemValue) => setSelectedOption(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Prime Mover" value="PM" />
-            <Picker.Item label="Terminal Transport" value="TT" />
-            <Picker.Item label="Prime Mover Internal" value="PI" />
-            <Picker.Item label="Internal Transport" value="IT" />
-            <Picker.Item label="Small Forklift" value="FS" />
-            <Picker.Item label="Rings Tractor" value="RS" />
-            <Picker.Item label="Rubber Tire Granty Crane" value="RTG" />
-          </Picker>
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Vehicle Number:</Text>
-          <TextInput
-            value={vehicleNo}
-            onChangeText={(text) => setVehicleNo(text)}
-            placeholder="Enter Vehicle Number"
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Tire Serial Number:</Text>
-          <TextInput
-            value={tireNo}
-            onChangeText={(text) => setTireNo(text)}
-            placeholder="Enter Tire Serial Number"
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Km Reading:</Text>
-          <TextInput
-            value={kmReading}
-            onChangeText={(text) => setKmReading(text)}
-            placeholder="Enter Km Reading"
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Tire Position:</Text>
-          <Picker
-            selectedValue={selectedOption1}
-            onValueChange={handleSelectChange1}
-            style={styles.picker}
-          >
-            <Picker.Item label="Front Left" value="Front Left" />
-            <Picker.Item label="Front Right" value="Front Right" />
-            <Picker.Item label="Rear Left" value="Rear Left" />
-            <Picker.Item label="Rear Right" value="Rear Right" />
-          </Picker>
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Thread Depth:</Text>
-          <TextInput
-            value={threadDepth}
-            onChangeText={(text) => setThreadDepth(text)}
-            placeholder="Enter Thread Depth"
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Air Pressure:</Text>
-          <TextInput
-            value={tyrePressure}
-            onChangeText={(text) => setTyrePressure(text)}
-            placeholder="Enter Air Pressure"
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Tire Status:</Text>
-          <Picker
-            selectedValue={selectedOption2}
-            onValueChange={handleSelectChange2}
-            style={styles.picker}
-          >
-            <Picker.Item label="New" value="New" />
-            <Picker.Item label="Used" value="Used" />
-            <Picker.Item label="Damaged" value="Damaged" />
-          </Picker>
-        </View>
-        <View style={styles.inputContainer}>
-          <Text>Tire Brand:</Text>
-          <Picker
-            selectedValue={selectedOption3}
-            onValueChange={handleSelectChange3}
-            style={styles.picker}
-          >
-            <Picker.Item label="Brand A" value="BrandA" />
-            <Picker.Item label="Brand B" value="BrandB" />
-            <Picker.Item label="Brand C" value="BrandC" />
-          </Picker>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button title="Submit" onPress={handleFormSubmit} color="#054AAB" />
-        </View>
+    <ImageBackground source={require('./images/BG2.png')} style={styles.backgroundImage}>
+      <ScrollView contentContainerStyle={[styles.scrollContainer, isDarkMode ? styles.darkscrollContainer : styles.lightscrollContainer]}>
+        <View style={styles.container}>
+          <Text style={[styles.header, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Enter Data</Text>
 
-        <Modal visible={showPopup} transparent={true} animationType="slide">
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text>Confirm Data Entry</Text>
-              <Text>{enteredData}</Text>
-              <View style={styles.modalButtonContainer}>
-                <Button title="Confirm" onPress={handlePopupConfirm} color="#054AAB" />
-                <Button title="Cancel" onPress={handlePopupCancel} color="#054AAB" />
+          <View style={styles.vehicleSelectionContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Select Vehicle Type:</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleVehicleSelect('Prime Mover') }
+                >
+                  <Image source={require('./images/PM.png')} style={styles.vehicleImage} />
+                  <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>PM</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleVehicleSelect('Terminal Transport')}
+                >
+                  <Image source={require('./images/TT.png')} style={styles.vehicleImage} />
+                  <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>TT</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleVehicleSelect('Prime Mover Internal')}
+                >
+                  <Image source={require('./images/PM.png')} style={styles.vehicleImage} />
+                  <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>IPM</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleVehicleSelect('Internal Transport')}
+                >
+                  <Image source={require('./images/IT.png')} style={styles.vehicleImage} />
+                  <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>IT</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleVehicleSelect('Small Forklift')}
+                >
+                  <Image source={require('./images/FS.png')} style={styles.vehicleImage} />
+                  <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>FS</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleVehicleSelect('Rings Tractor')}
+                >
+                  <Image source={require('./images/RS.png')} style={styles.vehicleImage} />
+                  <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>RS</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleVehicleSelect('Rubber Tire Granty Crane')}
+                >
+                  <Image source={require('./images/RTG.png')} style={styles.vehicleImage} />
+                  <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>RTG</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Vehicle Number:</Text>
+            <TextInput
+              value={vehicleNo}
+              onChangeText={(text) => setVehicleNo(text)}
+              placeholder="Enter Vehicle Number"
+              placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Tire Serial Number:</Text>
+            <TextInput
+              value={tireNo}
+              onChangeText={(text) => setTireNo(text)}
+              placeholder="Enter Tire Serial Number"
+              placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Km Reading:</Text>
+            <TextInput
+              value={kmReading}
+              onChangeText={(text) => setKmReading(text)}
+              placeholder="Enter Km Reading"
+              placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Tire Position:</Text>
+            <Picker
+              selectedValue={selectedOption1}
+              onValueChange={handleSelectChange1}
+              style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
+            >
+              <Picker.Item label="Front Left" value="Front Left" />
+              <Picker.Item label="Front Right" value="Front Right" />
+              <Picker.Item label="Rear Left" value="Rear Left" />
+              <Picker.Item label="Rear Right" value="Rear Right" />
+            </Picker>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Thread Depth:</Text>
+            <TextInput
+              value={threadDepth}
+              onChangeText={(text) => setThreadDepth(text)}
+              placeholder="Enter Thread Depth"
+              placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Air Pressure:</Text>
+            <TextInput
+              value={tyrePressure}
+              onChangeText={(text) => setTyrePressure(text)}
+              placeholder="Enter Air Pressure"
+              placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Tire Status:</Text>
+            <Picker
+              selectedValue={selectedOption2}
+              onValueChange={handleSelectChange2}
+              style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
+            >
+              <Picker.Item label="Good" value="Good" />
+              <Picker.Item label="Worn Out" value="Worn Out" />
+            </Picker>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Tire Brand:</Text>
+            <Picker
+              selectedValue={selectedOption3}
+              onValueChange={handleSelectChange3}
+              style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
+            >
+              <Picker.Item label="Brand A" value="Brand A" />
+              <Picker.Item label="Brand B" value="Brand B" />
+              <Picker.Item label="Brand C" value="Brand C" />
+            </Picker>
+          </View>
+          <TouchableOpacity onPress={handleFormSubmit} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
+              <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Update Profile</Text>
+            </TouchableOpacity>
+          <Modal
+            transparent={true}
+            visible={showPopup}
+            onRequestClose={() => setShowPopup(false)}
+          >
+            <View style={[styles.popupContainer, isDarkMode ? styles.darkpopupContainer : styles.lightpopupContainer]}>
+              <View  style={[styles.popupContent, isDarkMode ? styles.darkpopupContent : styles.lightpopupContent]}>
+                <Text style={[styles.popuptitle, isDarkMode ? styles.darkdata : styles.lightdata]}>Entered Data</Text>
+                <Text style={[styles.data, isDarkMode ? styles.darkdata : styles.lightdata]}>{enteredData}</Text>
+                <View style={styles.popbutton}> 
+                  <TouchableOpacity onPress={handlePopupConfirm} style={[styles.popupbutton, isDarkMode ? styles.darkpopupbutton : styles.lightpopupbutton]}>
+                    <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Confirm</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handlePopupCancel} style={[styles.popupbutton, isDarkMode ? styles.darkpopupbutton : styles.lightpopupbutton]}>
+                    <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
-      </View>
+          </Modal>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -221,53 +338,178 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
   },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  darkscrollContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  },
+  lightscrollContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)'
+  },
   container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    padding: 10,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
+  },
+  vehicleSelectionContainer: {
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    borderWidth: 2,              // Border width for the whole button
+    borderColor: '#000',         // Border color (black in this case)
+    borderRadius: 10,            // Optional: Round the corners of the border
+    margin: 10,
+    alignItems: 'center',
+  },
+  darkbuttonContainer: {
+    borderColor: 'white',         // Border color (black in this case)
+  },
+  lightbuttonContainer: {
+    borderColor: '#000',         // Border color (black in this case)
+  },
+  selectedButtonDark: {
+    borderColor: '#f39c12', // Highlight color for dark mode
+    borderWidth: 2,
+  },
+  selectedButtonLight: {
+    borderColor: '#f39c12', // Highlight color for light mode
+    borderWidth: 2,
+  },
+  button: {
+    alignItems: 'center',
+    padding: 10,
+  },
+  vehicleImage: {
+    width: 80,
+    height: 50,
+  },
+  vehicleText: {
+    textAlign: 'center',
+    marginVertical: 5,
+  },
+  darkvehicleText:{
+    color: '#fff',
+  },
+  lightvehicleText:{
+    color: 'black',
   },
   inputContainer: {
-    marginBottom: 12,
+    marginBottom: 15,
+  },
+  inputText:{
+    fontSize: 15,
+    paddingBottom:10,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
     padding: 8,
-    marginTop: 4,
+    borderRadius: 5,
+  },
+  darkinput: {
+    borderColor:'white',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    color: 'white',
+  },
+  lightinput: {
+    borderColor:'black',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    color: '#000',
   },
   picker: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
+    padding: 8,
+    borderRadius: 5,
+    backgroundColor: '#fff',
   },
-  buttonContainer: {
-    marginTop: 16,
+  uploadButton: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems:'center',
+    borderWidth:1,
   },
-  modalContainer: {
+  darkuploadButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderColor:'white'
+  },
+  lightuploadButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  uploadButtonText: {
+    fontSize: 16,
+  },
+  darkuploadButtonText: {
+    color: '#fff',
+  },
+  lightuploadButtonText: {
+    color: '#000',
+  },
+  popupContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
   },
-  modalContent: {
-    width: '80%',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
+  darkpopupContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.79)',
+  },
+  lightpopupContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.79)',
+  },
+  popupContent: {
+    padding: 30,
+    borderWidth:2, 
+    borderRadius:9, 
     alignItems: 'center',
   },
-  modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 16,
+  darkpopupContent: {
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    borderColor:'white',
   },
+  lightpopupContent: {
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderColor:'black',
+  },
+  popuptitle:{
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  data:{
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  lightdata:{
+    color:'black'
+
+  },
+  darkdata:{
+    color:'white'
+  },
+  popbutton:{
+    flexDirection: 'row',
+    justifyContent:'space-around',
+    marginTop: 20,
+  },
+  popupbutton:{
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 10,
+    borderWidth: 1,  
+  },
+  lightpopupbutton:{
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  darkpopupbutton:{
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    borderColor:'white'
+  }
 });
 
 export default EnterData;
