@@ -1,3 +1,4 @@
+//EmployeeHome
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native'; // Ensure Image is imported from 'react-native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -15,6 +16,7 @@ type RootStackParamList = {
   EmployeeHome: undefined;
   EnterData: undefined;
   ViewData: undefined;
+  TireCheckList: undefined;
 };
 
 type AuthUser = {
@@ -71,6 +73,10 @@ const EmployeeHome: React.FC<Props> = ({ navigation }) => {
               <Image source={isDarkMode ? require('./images/viewdatadark.png') : require('./images/viewdatalight.png') } style={styles.buttonImage} />
               <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>View Tire Data</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton] } onPress={() => navigation.navigate('TireCheckList')}>
+              <Image source={isDarkMode ? require('./images/tododark.png') : require('./images/todolight.png') } style={styles.buttonImage} />
+              <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>To Check</Text>
+            </TouchableOpacity>
           </View>
         </View>
         <Footer />
@@ -111,11 +117,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Button color
-    paddingVertical: 15,
-    paddingHorizontal: 30,
+    // paddingVertical: 15,
+    // paddingHorizontal: 30,
     borderRadius: 9,
-    height: 150,
-    width: 160, // Increased width for better appearance
+    height: 130,
+    width: 105, // Increased width for better appearance
     alignItems: 'center',
     justifyContent: 'center', // Center text inside the button
     marginHorizontal: 10, // Space between buttons
@@ -132,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 20, // Space between the image and the text
   },
   buttonText: {
-    fontSize: 16, // Font size
+    fontSize: 14, // Font size
     textAlign: 'center', // Center text inside the button
   },
   darkModeText:{

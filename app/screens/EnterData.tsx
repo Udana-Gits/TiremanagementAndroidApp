@@ -305,7 +305,7 @@ const EnterData = () => {
             </Picker>
           </View>
           <TouchableOpacity onPress={handleFormSubmit} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
-              <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Update Profile</Text>
+              <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Upload Data</Text>
             </TouchableOpacity>
           <Modal
             transparent={true}

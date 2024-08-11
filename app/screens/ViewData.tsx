@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, Modal, StyleSheet, FlatList, ImageBackground, TouchableOpacity } from 'react-native';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { getDatabase, ref, onValue } from 'firebase/database';
-import { auth } from '../../FirebaseConfig'; // Adjust the path to your firebase config
+import { auth } from '../../FirebaseConfig';
 import { NavigationProp } from '@react-navigation/native';
-import Header from './Header'; // Adjust path as needed
-import Footer from './Footer';
+import { useDarkMode } from './DarkModeContext'; // Import dark mode context
 
 interface TireData {
   id: string;
@@ -27,6 +26,7 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
   const [tireNumber, setTireNumber] = useState<string>('');
   const [noDataFound, setNoDataFound] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { isDarkMode } = useDarkMode(); // Use dark mode context
 
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
@@ -133,29 +133,35 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require('./images/new1.jpg')} // Replace with the path to your image
+      source={require('./images/BG2.png')}
       style={styles.backgroundImage}
     >
-      <View style={styles.container}>
-        
+      <View style={[styles.container, isDarkMode ? styles.darkContainer : styles.lightContainer]}>
+      <Text style={[styles.header, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>View Tire Data</Text>
         {authUser ? (
           <View style={styles.innerContainer}>
-            <Text style={styles.label}>Tire Number</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Eg: T01"
-              value={tireNumber}
-              onChangeText={(text) => setTireNumber(text)}
-            />
-            <Button title="Search" onPress={handleSearch} color="#054AAB" />
-            {noDataFound && <Text>No data found for the entered Tire Number.</Text>}
+            <View  style={[styles.searchContainer, isDarkMode ? styles.darksearchContainer : styles.lightsearchContainer]}>
+              <Text style={[styles.label, isDarkMode ? styles.darkLabel : styles.lightLabel]}>Tire Number</Text>
+              <TextInput
+                style={[styles.input, isDarkMode ? styles.darkInput : styles.lightInput]}
+                placeholder="Eg: T01"
+                placeholderTextColor={isDarkMode ? '#ccc' : '#888'}
+                value={tireNumber}
+                onChangeText={(text) => setTireNumber(text)}
+              />
+              <View style = {styles.buttonContainer}>
+                <TouchableOpacity onPress={handleSearch} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
+                  <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Search</Text>
+                </TouchableOpacity>
+              </View>
+              {noDataFound && <Text style={isDarkMode ? styles.darkLabel : styles.lightLabel}>No data found for the entered Tire Number.</Text>}
+            </View>
             <ModalTable />
           </View>
         ) : (
-          <Text>Please sign in to access Tire Data.</Text>
+          <Text style={isDarkMode ? styles.darkLabel : styles.lightLabel}>Please sign in to access Tire Data.</Text>
         )}
       </View>
-      <Footer/>
     </ImageBackground>
   );
 };
@@ -164,38 +170,65 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Slightly transparent background
+  },
+  darkContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  lightContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
   },
   backgroundImage: {
     flex: 1,
   },
-  backButton: {
-    position: 'absolute',
-    top: 70,
-    left: 20,
-    backgroundColor: 'blue',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: 'white',
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 30,
+    marginBottom:-90,
   },
   innerContainer: {
     flex: 1,
     justifyContent: 'center',
   },
+  searchContainer: {
+    marginBottom: 16,
+    padding: 16,
+    borderRadius: 8,
+    borderWidth:1,
+  },
+  darksearchContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  lightsearchContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderColor:'black'
+  },
   label: {
     fontSize: 18,
     marginBottom: 8,
   },
+  darkLabel: {
+    color: '#fff',
+  },
+  lightLabel: {
+    color: '#000',
+  },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 4,
     padding: 8,
     marginBottom: 16,
+  },
+  darkInput: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    color: '#fff',
+    borderColor: '#fff',
+  },
+  lightInput: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    color: '#000',
+    borderColor: '#ccc',
   },
   modalContainer: {
     flex: 1,
@@ -221,6 +254,32 @@ const styles = StyleSheet.create({
   tableCell: {
     flex: 1,
     textAlign: 'center',
+  },
+  uploadButton: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems:'center',
+    width:150,
+    borderWidth:1,
+  },
+  darkuploadButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderColor: '#fff',
+  },
+  lightuploadButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  },
+  uploadButtonText: {
+    fontSize: 16,
+  },
+  darkuploadButtonText: {
+    color: '#fff',
+  },
+  lightuploadButtonText: {
+    color: '#000',
+  },
+  buttonContainer:{
+    alignItems:'center'
   },
 });
 

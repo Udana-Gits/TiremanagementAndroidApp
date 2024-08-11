@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     position: 'absolute',
     top: 5,
-    left: 20,
+    left: 5,
     right: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -158,8 +158,8 @@ const styles = StyleSheet.create({
   },
   togglebutton: {
     position: 'absolute',
-    top: 50,
-    left: 370,
+    top: 57,
+    left: 320,
   },
   logoImage: {
     width: 250,
