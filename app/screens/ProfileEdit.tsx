@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useDarkMode } from './DarkModeContext';
 
-
 const ProfileEdit: React.FC = () => {
   const [dateOfBirth, setDateOfBirth] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -18,7 +17,6 @@ const ProfileEdit: React.FC = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const navigation = useNavigation();
   const { isDarkMode } = useDarkMode();
-
 
   useEffect(() => {
     const auth = getAuth();
@@ -133,56 +131,53 @@ const ProfileEdit: React.FC = () => {
 
   return (
     <ImageBackground source={require('./images/BG2.png')} style={styles.backgroundImage}>
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.profileContainer}>
-        <View style={styles.profilePictureContainer}>
-          {profilePicture ? (
-            <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
-          ) : (
-            <Image
-              style={styles.profilePicture}
+      <ScrollView contentContainerStyle={[styles.container, isDarkMode ? styles.darkcontainer : styles.lightcontainer]}>
+        <View style={styles.profileContainer}>
+          <View style={styles.profilePictureContainer}>
+            {profilePicture ? (
+              <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
+            ) : (
+              <Image style={styles.profilePicture} />
+            )}
+            <TouchableOpacity onPress={selectImage} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
+              <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Upload Picture</Text>
+            </TouchableOpacity>
+            {uploading && <ActivityIndicator size="large" color="#0000ff" />}
+          </View>
+          <View style={styles.form}>
+            <Text style={[styles.label, isDarkMode ? styles.darklabel : styles.lightlabel]}>Personal Email:</Text>
+            <TextInput
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+              value={personalEmail}
+              onChangeText={setPersonalEmail}
             />
-          )}
-          <TouchableOpacity onPress={selectImage} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
-            <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Upload Picture</Text>
-          </TouchableOpacity>
-          {uploading && <ActivityIndicator size="large" color="#0000ff" />}
+            <Text style={[styles.label, isDarkMode ? styles.darklabel : styles.lightlabel]}>Date of Birth:</Text>
+            <TextInput
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+              value={dateOfBirth}
+              onChangeText={setDateOfBirth}
+              placeholder="YYYY-MM-DD"
+            />
+            <Text style={[styles.label, isDarkMode ? styles.darklabel : styles.lightlabel]}>Phone Number:</Text>
+            <TextInput
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+            />
+            <Text style={[styles.label, isDarkMode ? styles.darklabel : styles.lightlabel]}>Address:</Text>
+            <TextInput
+              style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+              value={address}
+              onChangeText={setAddress}
+            />
+            <TouchableOpacity onPress={handleUpdateProfile} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
+              <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Update Profile</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.form}>
-          <Text  style={[styles.label, isDarkMode ? styles.darklabel : styles.lightlabel]}>Personal Email:</Text>
-          <TextInput
-            style={styles.input}
-            value={personalEmail}
-            onChangeText={setPersonalEmail}
-          />
-          <Text style={[styles.label, isDarkMode ? styles.darklabel : styles.lightlabel]}>Date of Birth:</Text>
-          <TextInput
-            style={styles.input}
-            value={dateOfBirth}
-            onChangeText={setDateOfBirth}
-            placeholder="YYYY-MM-DD"
-          />
-          <Text style={[styles.label, isDarkMode ? styles.darklabel : styles.lightlabel]}>Phone Number:</Text>
-          <TextInput
-            style={styles.input}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            keyboardType="phone-pad"
-          />
-          <Text style={[styles.label, isDarkMode ? styles.darklabel : styles.lightlabel]}>Address:</Text>
-          <TextInput
-            style={styles.input}
-            value={address}
-            onChangeText={setAddress}
-          />
-          <TouchableOpacity onPress={handleUpdateProfile} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
-            <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Update Profile</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
     </ImageBackground>
-
   );
 };
 
@@ -190,24 +185,15 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Slightly transparent background
+  },
+  darkcontainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Slightly transparent dark background
+  },
+  lightcontainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Slightly transparent light background
   },
   backgroundImage: {
     flex: 1,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  backButtonImage: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: '#054AAB',
   },
   profileContainer: {
     flex: 1,
@@ -219,34 +205,34 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   profilePicture: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     marginBottom: 10,
   },
   uploadButton: {
-    backgroundColor: '#054AAB',
     padding: 10,
     borderRadius: 5,
+    alignItems:'center',
   },
-  darkuploadButton:{
+  darkuploadButton: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  lightuploadButton:{
+  lightuploadButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
   },
   uploadButtonText: {
     fontSize: 16,
-    alignSelf:'center',
   },
   darkuploadButtonText: {
     color: '#fff',
   },
   lightuploadButtonText: {
-    color: 'black',
+    color: '#000',
   },
   form: {
     width: '100%',
+    paddingHorizontal: 20,
   },
   label: {
     fontSize: 16,
@@ -256,14 +242,23 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   lightlabel: {
-    color: 'black',
+    color: '#000',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
+    borderRadius: 5,
     padding: 10,
-    marginBottom: 16,
+    marginBottom: 15,
+  },
+  darkinput: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    color: '#fff',
+    borderColor: '#fff',
+  },
+  lightinput: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    color: '#000',
+    borderColor: '#000',
   },
 });
 

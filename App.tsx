@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
+//App.tsx
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import EnterData from './app/screens/EnterData';
 import ViewData from './app/screens/ViewData';
 import ViewVehicle from './app/screens/ViewVehicle';
 import ProfileEdit from './app/screens/ProfileEdit';
+import TireCheckList from './app/screens/TireCheckList';
 import { DarkModeProvider } from './app/screens/DarkModeContext';
 
 
@@ -21,6 +22,7 @@ type RootStackParamList = {
   ViewData: undefined;
   ViewVehicle: undefined;
   ProfileEdit: undefined;
+  TireCheckList: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,6 +39,8 @@ export default function App() {
           <Stack.Screen options={{ headerShown: false }} name="ViewData" component={ViewData} />
           <Stack.Screen options={{ headerShown: false }} name="ViewVehicle" component={ViewVehicle} />
           <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} />
+          <Stack.Screen options={{ headerShown: false }} name="TireCheckList" component={TireCheckList} />
+
         </Stack.Navigator>
       </NavigationContainer>
     </DarkModeProvider>

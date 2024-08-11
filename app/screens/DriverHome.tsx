@@ -1,3 +1,4 @@
+//DriverHome
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -7,6 +8,7 @@ import Navbar from './NavBar'; // Adjust path as needed
 import { auth, db } from '../../FirebaseConfig'; // Adjust path as needed
 import { get, ref } from 'firebase/database';
 import { useDarkMode } from './DarkModeContext';
+
 
 
 type RootStackParamList = {
