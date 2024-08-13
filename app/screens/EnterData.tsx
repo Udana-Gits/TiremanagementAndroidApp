@@ -37,11 +37,13 @@ const EnterData = () => {
   const [selectedOption1, setSelectedOption1] = useState<TireOption>('');
   const [selectedOption2, setSelectedOption2] = useState<TireOption>('');
   const [selectedOption3, setSelectedOption3] = useState<TireOption>('');
-  const [date, setDate] = useState(new Date().toLocaleString('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: 'numeric',
-  }));
+  const [date, setDate] = useState(() => {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const yyyy = today.getFullYear();
+    return `${dd}-${mm}-${yyyy}`;
+  });
   const [showPopup, setShowPopup] = useState(false);
   const [enteredData, setEnteredData] = useState('');
   const { isDarkMode } = useDarkMode();
@@ -95,7 +97,7 @@ const EnterData = () => {
   };
 
   const handlePopupConfirm = () => {
-    const userRef = ref(db, `TireData/${date.replace(/\//g, '-')}/${tireNo}`);
+    const userRef = ref(db, `TireData/${date}/${tireNo}`);
     set(userRef, {
       vehicleNo: vehicleNo,
       tireNo: tireNo,

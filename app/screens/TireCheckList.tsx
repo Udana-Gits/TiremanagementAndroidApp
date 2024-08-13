@@ -57,7 +57,7 @@ const TireCheckList: React.FC = () => {
 
         console.log("Processed Tires:", tires);
 
-        const today = dayjs().format('MM-DD-YYYY');
+        const today = dayjs().format('DD-MM-YYYY');
         const tiresDueForCheck = tires.filter(tire => {
           const lastChecked = dayjs(tire.lastCheckedDate, 'MM-DD-YYYY');
           return lastChecked.isBefore(today) || lastChecked.isSame(today);
