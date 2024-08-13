@@ -76,7 +76,7 @@ const Navbar: React.FC<Props> = ({ authuser }) => {
       <View style={styles.container}>
         <View style={styles.navbarBrand}>
           <Text style={[styles.welcomeText, isDarkMode ? styles.welcomeTextdark : styles.welcomeTextlight]}>
-            Welcome {firstName}
+            Welcome Back {firstName}
           </Text>
         </View>
       </View>
@@ -89,12 +89,13 @@ const styles = StyleSheet.create({
     padding: 10,
     position: 'relative',
     zIndex: 10,
+    marginTop:-15
   },
   navbardark: {
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
   },
   navbarlight: {
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
   },
   container: {
     flexDirection: 'row',
