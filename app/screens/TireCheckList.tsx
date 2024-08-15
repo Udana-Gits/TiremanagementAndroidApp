@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal: 20,
     borderRadius: 10,
+    marginTop:30,
   },
   darkContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',

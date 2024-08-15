@@ -1,15 +1,15 @@
 //EmployeeHome
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native'; // Ensure Image is imported from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native'; 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Header from './Header'; // Adjust path as needed
+import Header from './Header'; 
 import Footer from './Footer';
 import Navbar from './NavBar';
-import { auth, db } from '../../FirebaseConfig'; // Adjust path as needed
+import { auth, db } from '../../FirebaseConfig'; //firebase configeration import
 import { get, ref } from 'firebase/database';
-import { useDarkMode } from './DarkModeContext';
+import { useDarkMode } from './DarkModeContext';//dark mode status
 
-
+//define pages
 type RootStackParamList = {
   Login: undefined;
   DriverHome: undefined;
@@ -18,7 +18,7 @@ type RootStackParamList = {
   ViewData: undefined;
   TireCheckList: undefined;
 };
-
+//define  components
 type AuthUser = {
   uid: string;
   profilePicture?: string;
@@ -26,7 +26,7 @@ type AuthUser = {
   firstName?: string;
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'EmployeeHome'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'EmployeeHome'>; //define employeehome for type script
 
 const EmployeeHome: React.FC<Props> = ({ navigation }) => {
   const [authuser, setAuthUser] = useState<AuthUser | null>(null);
