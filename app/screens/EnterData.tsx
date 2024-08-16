@@ -253,10 +253,14 @@ const EnterData = () => {
               onValueChange={handleSelectChange1}
               style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
             >
-              <Picker.Item label="Front Left" value="Front Left" />
-              <Picker.Item label="Front Right" value="Front Right" />
-              <Picker.Item label="Rear Left" value="Rear Left" />
-              <Picker.Item label="Rear Right" value="Rear Right" />
+              <Picker.Item label="P #01" value="P #01" />
+              <Picker.Item label="P #02" value="P #02" />
+              <Picker.Item label="P #03" value="P #03" />
+              <Picker.Item label="P #04" value="P #04" />
+              <Picker.Item label="P #05" value="P #05" />
+              <Picker.Item label="P #06" value="P #06" />
+              <Picker.Item label="P #07" value="P #07" />
+              <Picker.Item label="P #08" value="P #08" />
             </Picker>
           </View>
 
@@ -289,8 +293,9 @@ const EnterData = () => {
               onValueChange={handleSelectChange2}
               style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
             >
-              <Picker.Item label="Good" value="Good" />
-              <Picker.Item label="Worn Out" value="Worn Out" />
+              <Picker.Item label="New" value="New" />
+              <Picker.Item label="Rebuild" value="Rebuild" />
+              <Picker.Item label="Broken" value="Broken" />
             </Picker>
           </View>
 
@@ -301,9 +306,16 @@ const EnterData = () => {
               onValueChange={handleSelectChange3}
               style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
             >
-              <Picker.Item label="Brand A" value="Brand A" />
-              <Picker.Item label="Brand B" value="Brand B" />
-              <Picker.Item label="Brand C" value="Brand C" />
+              <Picker.Item label="Magna" value="Magna" />
+              <Picker.Item label="GSR" value="GSR" />
+              <Picker.Item label="Continantal" value="Continantal" />
+              <Picker.Item label="Westlake" value="Westlake" />
+              <Picker.Item label="JK" value="JK" />
+              <Picker.Item label="Michalin" value="Michalin" />
+              <Picker.Item label="Advance" value="Advance" />
+              <Picker.Item label="Annaite" value="Annaite" />
+              <Picker.Item label="Jetsteel" value="Jetsteel" />
+              <Picker.Item label="Jetway" value="Jetway" />
             </Picker>
           </View>
           <TouchableOpacity onPress={handleFormSubmit} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
