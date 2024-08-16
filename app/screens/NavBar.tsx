@@ -3,12 +3,14 @@ import { signOut } from 'firebase/auth';
 import { auth, db } from '../../FirebaseConfig'; 
 import { get, ref } from 'firebase/database';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useDarkMode } from './DarkModeContext';
+
 import {
   View,
   Text,
   Image,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 
 type AuthUser = {
@@ -32,11 +34,11 @@ type Props = {
 };
 
 const Navbar: React.FC<Props> = ({ authuser }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [profilePicture, setProfilePicture] = useState('');
   const [occupation, setOccupation] = useState('');
   const [firstName, setFirstName] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     const fetchProfilePicture = async () => {
@@ -55,10 +57,6 @@ const Navbar: React.FC<Props> = ({ authuser }) => {
     fetchProfilePicture();
   }, [authuser]);
 
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -74,54 +72,13 @@ const Navbar: React.FC<Props> = ({ authuser }) => {
   };
 
   return (
-    <View style={styles.navbar}>
+    <View style={[styles.navbar, isDarkMode ? styles.navbardark : styles.navbarlight]}>
       <View style={styles.container}>
         <View style={styles.navbarBrand}>
-          <Text style={styles.welcomeText}>Welcome {firstName}</Text>
+          <Text style={[styles.welcomeText, isDarkMode ? styles.welcomeTextdark : styles.welcomeTextlight]}>
+            Welcome Back {firstName}
+          </Text>
         </View>
-        <TouchableOpacity onPress={handleToggle}>
-          {profilePicture ? (
-            <Image
-              source={{ uri: profilePicture }}
-              style={styles.profilePicture}
-            />
-          ) : (
-            <Image
-              source={{ uri: '/images/components/threelinebutton.png' }}
-              style={styles.toggleButtonImage}
-            />
-          )}
-        </TouchableOpacity>
-        {isOpen && (
-            
-          <View style={styles.navbarProfilePopup}>
-            {profilePicture ? (
-            <Image
-              source={{ uri: profilePicture }}
-              style={styles.profilePicture1}
-            />
-          ) : (
-            <Image
-              source={{ uri: '/images/components/threelinebutton.png' }}
-              style={styles.toggleButtonImage}
-            />
-          )}
-            <View style={styles.profileActions}>
-              {authuser ? (
-                <View>
-                  <TouchableOpacity onPress={editProfile} style={styles.navbarButton}>
-                    <Text style={styles.navbarButtonText}>Edit Profile</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleSignOut} style={styles.navbarButton}>
-                    <Text style={styles.navbarButtonText}>Sign Out</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <Text style={styles.signedOutText}>Signed out</Text>
-              )}
-            </View>
-          </View>
-        )}
       </View>
     </View>
   );
@@ -129,8 +86,16 @@ const Navbar: React.FC<Props> = ({ authuser }) => {
 
 const styles = StyleSheet.create({
   navbar: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     padding: 10,
+    position: 'relative',
+    zIndex: 10,
+    marginTop:-15
+  },
+  navbardark: {
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
+  },
+  navbarlight: {
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
   },
   container: {
     flexDirection: 'row',
@@ -141,60 +106,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   welcomeText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
   },
-  profilePicture: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+
+  welcomeTextdark: {
+    color: 'white',
   },
-  profilePicture1: {
-    width: 100,
-    height: 100,
-    borderRadius: 90,
-    marginTop: 30,
-  },
-  toggleButtonImage: {
-    width: 30,
-    height: 30,
-  },
-  navbarProfilePopup: {
-    position: 'absolute',
-    top: 50,
-    right: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 9,
-    padding: 10,
-    shadowColor: '#fff',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 5,
-    alignItems: 'center',
-    height: 500,
-    width:250,
-  },
-  profileActions: {
-    alignItems: 'center',
-  },
-  navbarButton: {
-    backgroundColor: '#054AAB', // Change button color
-    padding: 15, // Adjust padding for button size
-    borderRadius: 5,
-    marginVertical: 5,
-    alignItems: 'center',
-    width: 190, // Adjust button width
-  },
-  navbarButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    alignContent:'flex-end'
-  },
-  signedOutText: {
-    fontSize: 14,
-    color: '#888',
+  welcomeTextlight: {
+    color: 'black',
   },
 });
 
