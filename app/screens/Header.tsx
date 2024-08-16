@@ -103,7 +103,7 @@ const Header: React.FC<Props> = ({ authuser }) => {
       )}
 
       <Animated.View style={[styles.slideMenu, isDarkMode ? styles.slideMenudark : styles.slideMenulight, { transform: [{ translateX: slideAnim }] }]}>
-        <View>
+        <View style={styles.logoContainer}>
           <Image source={isDarkMode ? require('./images/header.png') : require('./images/header1.png')} style={styles.logoImage}/>
         </View>            
         <View style={styles.profileContainer}>
@@ -161,6 +161,9 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  logoContainer: {
+    alignItems: 'center',
+  },
   logoImage: {
     width: 250,
     height: 150,
@@ -197,8 +200,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
   },
   profileContainer: {
-    alignItems: 'flex-start',
     marginBottom: 20,
+    alignItems: 'center',
   },
   profilePicture: {
     width: 150,
