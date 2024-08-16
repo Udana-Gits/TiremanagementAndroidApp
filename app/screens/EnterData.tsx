@@ -146,7 +146,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Prime Mover') }
                 >
-                  <Image source={require('./images/PM.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/PM.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>PM</Text>
                 </TouchableOpacity>
               </View>
@@ -156,7 +156,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Terminal Transport')}
                 >
-                  <Image source={require('./images/TT.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/TT.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>TT</Text>
                 </TouchableOpacity>
               </View>
@@ -166,7 +166,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Prime Mover Internal')}
                 >
-                  <Image source={require('./images/PM.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/PM.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>IPM</Text>
                 </TouchableOpacity>
               </View>
@@ -176,7 +176,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Internal Transport')}
                 >
-                  <Image source={require('./images/IT.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/IT.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>IT</Text>
                 </TouchableOpacity>
               </View>
@@ -186,7 +186,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Small Forklift')}
                 >
-                  <Image source={require('./images/FS.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/FS.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>FS</Text>
                 </TouchableOpacity>
               </View>
@@ -196,7 +196,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Rings Tractor')}
                 >
-                  <Image source={require('./images/RS.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/RS.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>RS</Text>
                 </TouchableOpacity>
               </View>
@@ -206,7 +206,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Rubber Tire Granty Crane')}
                 >
-                  <Image source={require('./images/RTG.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/RTG.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>RTG</Text>
                 </TouchableOpacity>
               </View>
