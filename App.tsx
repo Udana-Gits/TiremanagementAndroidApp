@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './app/screens/Login';
 import DriverHome from './app/screens/DriverHome';
 import EmployeeHome from './app/screens/EmployeeHome';
+import AdminHome from './app/screens/AdminHome';
 import EnterData from './app/screens/EnterData';
 import ViewData from './app/screens/ViewData';
 import ViewVehicle from './app/screens/ViewVehicle';
@@ -35,6 +36,7 @@ export default function App() {
           <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
           <Stack.Screen options={{ headerShown: false }} name="DriverHome" component={DriverHome} />
           <Stack.Screen options={{ headerShown: false }} name="EmployeeHome" component={EmployeeHome} />
+          <Stack.Screen options={{ headerShown: false }} name="AdminHome" component={AdminHome} />
           <Stack.Screen options={{ headerShown: false }} name="EnterData" component={EnterData} />
           <Stack.Screen options={{ headerShown: false }} name="ViewData" component={ViewData} />
           <Stack.Screen options={{ headerShown: false }} name="ViewVehicle" component={ViewVehicle} />
