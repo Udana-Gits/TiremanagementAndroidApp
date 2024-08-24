@@ -69,21 +69,21 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
   };
 
   const getTyrePressureColor = (tyrePressure: number) => {
-    if (tyrePressure >= 140 && tyrePressure < 150) {
+    if (tyrePressure >= 45) {
       return 'green';
-    } else if (tyrePressure > 135 && tyrePressure < 140) {
+    } else if (tyrePressure >= 42 && tyrePressure < 45) {
       return 'yellow';
-    } else {
+    } else if (tyrePressure < 41){
       return 'red';
     }
   };
 
   const getThreadDepthColor = (threadDepth: number) => {
-    if (threadDepth >= 120 && threadDepth < 125) {
+    if (threadDepth >= 10) {
       return 'green';
-    } else if (threadDepth >= 115 && threadDepth < 120) {
+    } else if (threadDepth >= 5 && threadDepth < 10) {
       return 'yellow';
-    } else {
+    } else if(threadDepth <= 4){
       return 'red';
     }
   };
