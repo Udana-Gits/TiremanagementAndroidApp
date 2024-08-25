@@ -14,8 +14,14 @@ type RootStackParamList = {
     Login: undefined;
     DriverHome: undefined;
     EmployeeHome: undefined;
+    AdminHome: undefined;
+    TireManagement: undefined;
+    VehicleManagement: undefined;
+    Administrative: undefined;
     EnterData: undefined;
     ViewData: undefined;
+    ViewVehicle: undefined;
+    ProfileEdit: undefined;
     TireCheckList: undefined;
 };
 
@@ -26,9 +32,9 @@ type AuthUser = {
     firstName?: string;
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'EmployeeHome'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'AdminHome'>;
 
-const EmployeeHome: React.FC<Props> = ({ navigation }) => {
+const AdminHome: React.FC<Props> = ({ navigation }) => {
     const [authuser, setAuthUser] = useState<AuthUser | null>(null);
     const { isDarkMode } = useDarkMode();
 
@@ -153,4 +159,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default EmployeeHome;
+export default AdminHome;

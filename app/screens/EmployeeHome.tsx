@@ -66,7 +66,7 @@ const EmployeeHome: React.FC<Props> = ({ navigation }) => {
         <View style={styles.mainContent}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton]} onPress={() => navigation.navigate('EnterData')}>
-              <Image source={isDarkMode ? require('./images/eneterdatadark.png') : require('./images/eneterdatalight.png')}style={styles.buttonImage} />
+              <Image source={isDarkMode ? require('./images/enterdatadark.png') : require('./images/enterdatalight.png')}style={styles.buttonImage} />
               <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>Enter Tire Data</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton] } onPress={() => navigation.navigate('ViewData')}>

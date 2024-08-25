@@ -22,6 +22,10 @@ type RootStackParamList = {
   Login: undefined;
   DriverHome: undefined;
   EmployeeHome: undefined;
+  AdminHome: undefined;
+  TireManagement: undefined;
+  VehicleManagement: undefined;
+  Administrative: undefined;
   EnterData: undefined;
   ViewData: undefined;
   ViewVehicle: undefined;
