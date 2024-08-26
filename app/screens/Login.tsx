@@ -12,6 +12,7 @@ import { useDarkMode } from './DarkModeContext';
 type RootStackParamList = {
   DriverHome: undefined;
   EmployeeHome: undefined;
+  AdminHome: undefined;
 };
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'DriverHome'>;
@@ -34,6 +35,8 @@ const Login: React.FC = () => {
         navigation.navigate('DriverHome');
       } else if (userOccupation === 'Employee') {
         navigation.navigate('EmployeeHome');
+      } else if (userOccupation === 'Admin') {
+        navigation.navigate('AdminHome');
       }
     } catch (error) {
       console.error(error);

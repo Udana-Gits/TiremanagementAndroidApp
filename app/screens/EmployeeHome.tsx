@@ -66,7 +66,7 @@ const EmployeeHome: React.FC<Props> = ({ navigation }) => {
         <View style={styles.mainContent}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton]} onPress={() => navigation.navigate('EnterData')}>
-              <Image source={isDarkMode ? require('./images/eneterdatadark.png') : require('./images/eneterdatalight.png')}style={styles.buttonImage} />
+              <Image source={isDarkMode ? require('./images/enterdatadark.png') : require('./images/enterdatalight.png')}style={styles.buttonImage} />
               <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>Enter Tire Data</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton] } onPress={() => navigation.navigate('ViewData')}>
@@ -111,20 +111,22 @@ const styles = StyleSheet.create({
     top: -50, 
   },
   buttonContainer: {
-    flexDirection: 'row', // Arrange buttons in a row
+    flexDirection: 'column', // Arrange buttons in a row
     justifyContent: 'center', // Center buttons horizontally
     alignItems: 'center', // Align items in the center of the row
+    top: 40,
   },
   button: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Button color
     // paddingVertical: 15,
     // paddingHorizontal: 30,
     borderRadius: 9,
-    height: 130,
-    width: 105, // Increased width for better appearance
+    height: 160,
+    width: 350, // Increased width for better appearance
     alignItems: 'center',
     justifyContent: 'center', // Center text inside the button
     marginHorizontal: 10, // Space between buttons
+    marginVertical: 10, // Space between buttons
   },
   darkbutton:{
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -133,8 +135,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
   },
   buttonImage: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
     marginBottom: 20, // Space between the image and the text
   },
   buttonText: {

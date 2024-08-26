@@ -76,7 +76,7 @@ const Navbar: React.FC<Props> = ({ authuser }) => {
       <View style={styles.container}>
         <View style={styles.navbarBrand}>
           <Text style={[styles.welcomeText, isDarkMode ? styles.welcomeTextdark : styles.welcomeTextlight]}>
-            Welcome Back {firstName}
+            Welcome Back {firstName}!
           </Text>
         </View>
       </View>
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
+    textAlign:'center',
   },
 
   welcomeTextdark: {

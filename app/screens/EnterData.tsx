@@ -146,7 +146,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Prime Mover') }
                 >
-                  <Image source={require('./images/PM.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/PM.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>PM</Text>
                 </TouchableOpacity>
               </View>
@@ -156,7 +156,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Terminal Transport')}
                 >
-                  <Image source={require('./images/TT.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/TT.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>TT</Text>
                 </TouchableOpacity>
               </View>
@@ -166,7 +166,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Prime Mover Internal')}
                 >
-                  <Image source={require('./images/PM.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/PM.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>IPM</Text>
                 </TouchableOpacity>
               </View>
@@ -176,7 +176,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Internal Transport')}
                 >
-                  <Image source={require('./images/IT.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/IT.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>IT</Text>
                 </TouchableOpacity>
               </View>
@@ -186,7 +186,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Small Forklift')}
                 >
-                  <Image source={require('./images/FS.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/FS.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>FS</Text>
                 </TouchableOpacity>
               </View>
@@ -196,7 +196,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Rings Tractor')}
                 >
-                  <Image source={require('./images/RS.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/RS.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>RS</Text>
                 </TouchableOpacity>
               </View>
@@ -206,7 +206,7 @@ const EnterData = () => {
                   style={styles.button}
                   onPress={() => handleVehicleSelect('Rubber Tire Granty Crane')}
                 >
-                  <Image source={require('./images/RTG.png')} style={styles.vehicleImage} />
+                  <Image source={require('./images/vehicles/RTG.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>RTG</Text>
                 </TouchableOpacity>
               </View>
@@ -253,10 +253,14 @@ const EnterData = () => {
               onValueChange={handleSelectChange1}
               style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
             >
-              <Picker.Item label="Front Left" value="Front Left" />
-              <Picker.Item label="Front Right" value="Front Right" />
-              <Picker.Item label="Rear Left" value="Rear Left" />
-              <Picker.Item label="Rear Right" value="Rear Right" />
+              <Picker.Item label="P #01" value="P #01" />
+              <Picker.Item label="P #02" value="P #02" />
+              <Picker.Item label="P #03" value="P #03" />
+              <Picker.Item label="P #04" value="P #04" />
+              <Picker.Item label="P #05" value="P #05" />
+              <Picker.Item label="P #06" value="P #06" />
+              <Picker.Item label="P #07" value="P #07" />
+              <Picker.Item label="P #08" value="P #08" />
             </Picker>
           </View>
 
@@ -289,8 +293,9 @@ const EnterData = () => {
               onValueChange={handleSelectChange2}
               style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
             >
-              <Picker.Item label="Good" value="Good" />
-              <Picker.Item label="Worn Out" value="Worn Out" />
+              <Picker.Item label="New" value="New" />
+              <Picker.Item label="Rebuild" value="Rebuild" />
+              <Picker.Item label="Broken" value="Broken" />
             </Picker>
           </View>
 
@@ -301,9 +306,16 @@ const EnterData = () => {
               onValueChange={handleSelectChange3}
               style={[styles.picker, isDarkMode ? styles.darkinput : styles.lightinput]}
             >
-              <Picker.Item label="Brand A" value="Brand A" />
-              <Picker.Item label="Brand B" value="Brand B" />
-              <Picker.Item label="Brand C" value="Brand C" />
+              <Picker.Item label="Magna" value="Magna" />
+              <Picker.Item label="GSR" value="GSR" />
+              <Picker.Item label="Continantal" value="Continantal" />
+              <Picker.Item label="Westlake" value="Westlake" />
+              <Picker.Item label="JK" value="JK" />
+              <Picker.Item label="Michalin" value="Michalin" />
+              <Picker.Item label="Advance" value="Advance" />
+              <Picker.Item label="Annaite" value="Annaite" />
+              <Picker.Item label="Jetsteel" value="Jetsteel" />
+              <Picker.Item label="Jetway" value="Jetway" />
             </Picker>
           </View>
           <TouchableOpacity onPress={handleFormSubmit} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>

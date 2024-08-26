@@ -106,20 +106,22 @@ const styles = StyleSheet.create({
     top: -50, // Center content horizontally within the available space
   },
   buttonContainer: {
-    flexDirection: 'row', // Arrange buttons in a row
+    flexDirection: 'column', // Arrange buttons in a row
     justifyContent: 'center', // Center buttons horizontally
     alignItems: 'center', // Align items in the center of the row
+    top: 40,
   },
   button: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Button color
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 9,
-    height: 150,
-    width: 160, // Increased width for better appearance
+    height: 200,
+    width: 350, // Increased width for better appearance
     alignItems: 'center',
     justifyContent: 'center', // Center text inside the button
     marginHorizontal: 10, // Space between buttons
+    marginVertical: 10, // Space between buttons
   },
   darkbutton:{
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -128,12 +130,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
   },
   buttonImage: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
     marginBottom: 20, // Space between the image and the text
   },
   buttonImage2: {
-    width: 80,
+    width: 90,
     height: 70,
     marginBottom: 20, // Space between the image and the text
   },
