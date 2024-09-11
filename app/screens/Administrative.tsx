@@ -17,6 +17,7 @@ type RootStackParamList = {
     ViewVehicle: undefined;
     ProfileEdit: undefined;
     TireCheckList: undefined;
+    SignUp: undefined;
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Administrative'>;
@@ -36,7 +37,7 @@ const Administrative: React.FC<Props> = ({ navigation }) => {
                             <Image source={isDarkMode ? require('./images/usermanagedark.png') : require('./images/usermanagelight.png')} style={styles.buttonImage} />
                             <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>Manage Users</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton]} onPress={() => navigation.navigate('AddNewUser')}>
+                        <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton]} onPress={() => navigation.navigate('SignUp')}>
                             <Image source={isDarkMode ? require('./images/adduserdark.png') : require('./images/adduserlight.png')} style={styles.buttonImage} />
                             <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>Add New User</Text>
                         </TouchableOpacity>
