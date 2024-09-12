@@ -1,30 +1,18 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-  Modal,
-  StyleSheet,
-  ImageBackground,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TextInput, Button, Alert, Modal, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView} from 'react-native';
 import { db } from '../../FirebaseConfig';
 import { ref, set } from 'firebase/database';
 import { Picker } from '@react-native-picker/picker';
 import { useDarkMode } from './DarkModeContext';
 
 type VehicleType =
-  | 'Prime Mover'
-  | 'Terminal Transport'
-  | 'Prime Mover Internal'
-  | 'Internal Transport'
-  | 'Small Forklift'
-  | 'Rings Tractor'
-  | 'Rubber Tire Granty Crane';
+  | 'PM'
+  | 'TT'
+  | 'PI'
+  | 'IT'
+  | 'SF'
+  | 'RT'
+  | 'RTG';
 type TireOption = string;
 
 const EnterData = () => {
@@ -48,10 +36,113 @@ const EnterData = () => {
   const [enteredData, setEnteredData] = useState('');
   const { isDarkMode } = useDarkMode();
 
+  const [errorMessage1, setErrorMessage1] = useState('');
+  const [errorMessage2, setErrorMessage2] = useState('');
+  const [errorMessage3, setErrorMessage3] = useState('');
+  const [errorMessage4, setErrorMessage4] = useState('');
+  const [errorMessage5, setErrorMessage5] = useState('');
+
+
 
   const handleVehicleSelect = (vehicleType: VehicleType) => {
     setSelectedVehicleType(vehicleType);
+  
+    // Automatically set the prefix for vehicleNo and reset the numeric part
+    setVehicleNo(`${vehicleType}`);
   };
+
+  const handleVehicleNoChange = (text: string) => {
+    // Ensure the input starts with the vehicle type
+    const prefix = selectedVehicleType;
+    const numericPart = text.slice(prefix.length).replace(/\D/g, ''); // Remove non-numeric characters
+  
+    // Limit the numeric part to 4 digits
+    if (numericPart.length > 4) {
+      setErrorMessage1('You can only enter up to 4 digits.');
+    }else if(numericPart.length < 4){
+      setErrorMessage1('You must enter up to 4 digits.');
+    } 
+    else {
+      setErrorMessage1('');
+    }
+  
+    // Update the vehicle number with the prefix and numeric part
+    setVehicleNo(`${prefix}${numericPart.slice(0, 4)}`);
+  };
+
+  const handleTireNoChange = (text: string) => {
+    // Only allow alphanumeric characters (letters and numbers)
+    const alphanumericText = text.replace(/[^a-zA-Z0-9]/g, '');
+  
+    // Update the tireNo state with the filtered value
+    setTireNo(alphanumericText);
+  
+    // Optionally, you can add error validation if needed
+    if (text !== alphanumericText) {
+      setErrorMessage2('Tire Serial Number can only contain letters and numbers.');
+    } else {
+      setErrorMessage2('');
+    }
+  };
+  
+  const handleKmReadingChange = (text: string) => {
+    // Only allow numeric characters and one decimal point
+    const numericText = text.replace(/[^0-9.]/g, ''); 
+  
+    // Ensure only one decimal point is allowed
+    const validNumericText = numericText.split('.').length > 2 
+      ? numericText.slice(0, numericText.lastIndexOf('.')) 
+      : numericText;
+  
+    // Update the kmReading state with the filtered value
+    setKmReading(validNumericText);
+  
+    // Optionally, you can add error validation if needed
+    if (text !== validNumericText) {
+      setErrorMessage3('KM Reading can only contain numbers and one decimal point.');
+    } else {
+      setErrorMessage3('');
+    }
+  };
+
+  const handleThreadDepthChange = (text: string) => {
+    // Only allow numeric characters
+    const numericText = text.replace(/[^0-9]/g, '');
+
+    // Update the threadDepth state with the filtered value
+    setThreadDepth(numericText);
+
+    // Optionally, you can add error validation if needed
+    if (text.includes('.')) {
+        setErrorMessage4('Tire Depth must be a whole number. Please round off to the nearest whole number.');
+    } else if (parseInt(numericText) < 0 || parseInt(numericText) > 40) {
+        setErrorMessage4('Tire Depth must be between 0 and 40.');
+    } else {
+        setErrorMessage4('');
+    }
+};
+
+const handleTyrePressureChange = (text: string) => {
+  // Only allow numeric characters
+  const numericText = text.replace(/[^0-9]/g, '');
+
+  // Update the threadDepth state with the filtered value
+  setTyrePressure(numericText);
+
+  // Optionally, you can add error validation if needed
+  if (text.includes('.')) {
+      setErrorMessage5('Tire Pressure must be a whole number. Please round off to the nearest whole number.');
+  } else if (parseInt(numericText) < 0 || parseInt(numericText) > 160) {
+      setErrorMessage5('Tire Pressure must be between 0 and 160.');
+  } else {
+      setErrorMessage5('');
+  }
+};
+
+
+  
+  
+  
 
   const handleSelectChange1 = (itemValue: TireOption) => {
     setSelectedOption1(itemValue);
@@ -64,6 +155,9 @@ const EnterData = () => {
   const handleSelectChange3 = (itemValue: TireOption) => {
     setSelectedOption3(itemValue);
   };
+
+  
+
 
   const handleFormSubmit = () => {
     if (
@@ -78,6 +172,11 @@ const EnterData = () => {
       !kmReading
     ) {
       Alert.alert('Please fill in all required fields');
+      return;
+    }
+
+    if (vehicleNo === selectedVehicleType || vehicleNo.length <= selectedVehicleType.length) {
+      Alert.alert('Vehicle Number is incomplete. Please enter the full vehicle number.');
       return;
     }
 
@@ -136,6 +235,7 @@ const EnterData = () => {
     <ImageBackground source={require('./images/BG2.png')} style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={[styles.scrollContainer, isDarkMode ? styles.darkscrollContainer : styles.lightscrollContainer]}>
         <View style={styles.container}>
+          <Text></Text>
           <Text style={[styles.header, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Enter Data</Text>
 
           <View style={styles.vehicleSelectionContainer}>
@@ -144,7 +244,7 @@ const EnterData = () => {
               <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => handleVehicleSelect('Prime Mover') }
+                  onPress={() => handleVehicleSelect('PM') }
                 >
                   <Image source={require('./images/vehicles/PM.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>PM</Text>
@@ -154,7 +254,7 @@ const EnterData = () => {
               <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => handleVehicleSelect('Terminal Transport')}
+                  onPress={() => handleVehicleSelect('TT')}
                 >
                   <Image source={require('./images/vehicles/TT.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>TT</Text>
@@ -164,7 +264,7 @@ const EnterData = () => {
               <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => handleVehicleSelect('Prime Mover Internal')}
+                  onPress={() => handleVehicleSelect('PI')}
                 >
                   <Image source={require('./images/vehicles/PM.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>IPM</Text>
@@ -174,7 +274,7 @@ const EnterData = () => {
               <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => handleVehicleSelect('Internal Transport')}
+                  onPress={() => handleVehicleSelect('IT')}
                 >
                   <Image source={require('./images/vehicles/IT.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>IT</Text>
@@ -184,7 +284,7 @@ const EnterData = () => {
               <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => handleVehicleSelect('Small Forklift')}
+                  onPress={() => handleVehicleSelect('SF')}
                 >
                   <Image source={require('./images/vehicles/FS.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>FS</Text>
@@ -194,7 +294,7 @@ const EnterData = () => {
               <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => handleVehicleSelect('Rings Tractor')}
+                  onPress={() => handleVehicleSelect('RT')}
                 >
                   <Image source={require('./images/vehicles/RS.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>RS</Text>
@@ -204,7 +304,7 @@ const EnterData = () => {
               <View style={[styles.buttonContainer, isDarkMode ? styles.darkbuttonContainer : styles.lightbuttonContainer]}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => handleVehicleSelect('Rubber Tire Granty Crane')}
+                  onPress={() => handleVehicleSelect('RTG')}
                 >
                   <Image source={require('./images/vehicles/RTG.png')} style={styles.vehicleImage} />
                   <Text style={[styles.vehicleText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>RTG</Text>
@@ -217,33 +317,47 @@ const EnterData = () => {
             <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Vehicle Number:</Text>
             <TextInput
               value={vehicleNo}
-              onChangeText={(text) => setVehicleNo(text)}
+              onChangeText={handleVehicleNoChange}
               placeholder="Enter Vehicle Number"
               placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
               style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
-            />
+              keyboardType="numeric" // Ensure only numbers are allowed
+              onBlur={() => setErrorMessage1('')} // Clear error message on blur
+             />
+            {errorMessage1 ? (
+              <Text style={{ color: 'red', marginTop: 5 }}>{errorMessage1}</Text>
+            ) : null}
           </View>
 
           <View style={styles.inputContainer}>
             <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Tire Serial Number:</Text>
             <TextInput
               value={tireNo}
-              onChangeText={(text) => setTireNo(text)}
+              onChangeText={handleTireNoChange}
               placeholder="Enter Tire Serial Number"
               placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
               style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+              onBlur={() => setErrorMessage2('')} // Clear error message on blur
             />
+              {errorMessage2 ? (
+              <Text style={{ color: 'red', marginTop: 5 }}>{errorMessage2}</Text>
+            ) : null}
           </View>
 
           <View style={styles.inputContainer}>
             <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Km Reading:</Text>
             <TextInput
               value={kmReading}
-              onChangeText={(text) => setKmReading(text)}
+              onChangeText={handleKmReadingChange}
               placeholder="Enter Km Reading"
               placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
               style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+              keyboardType="numeric"
+              onBlur={() => setErrorMessage3('')} // Clear error message on blur
             />
+            {errorMessage3 ? (
+              <Text style={{ color: 'red', marginTop: 5 }}>{errorMessage3}</Text>
+            ) : null}
           </View>
 
           <View style={styles.inputContainer}>
@@ -268,22 +382,30 @@ const EnterData = () => {
             <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Thread Depth:</Text>
             <TextInput
               value={threadDepth}
-              onChangeText={(text) => setThreadDepth(text)}
+              onChangeText={handleThreadDepthChange}
               placeholder="Enter Thread Depth"
               placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
               style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+              keyboardType="numeric"
             />
+            {errorMessage4 ? (
+              <Text style={{ color: 'red', marginTop: 5 }}>{errorMessage4}</Text>
+            ) : null}
           </View>
 
           <View style={styles.inputContainer}>
             <Text style={[styles.inputText, isDarkMode ? styles.darkvehicleText : styles.lightvehicleText]}>Air Pressure:</Text>
             <TextInput
               value={tyrePressure}
-              onChangeText={(text) => setTyrePressure(text)}
+              onChangeText={handleTyrePressureChange}
               placeholder="Enter Air Pressure"
               placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
               style={[styles.input, isDarkMode ? styles.darkinput : styles.lightinput]}
+              keyboardType="numeric"
             />
+            {errorMessage5 ? (
+              <Text style={{ color: 'red', marginTop: 5 }}>{errorMessage5}</Text>
+            ) : null}
           </View>
 
           <View style={styles.inputContainer}>
