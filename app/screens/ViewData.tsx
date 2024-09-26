@@ -8,7 +8,8 @@ import { useDarkMode } from './DarkModeContext'; // Import dark mode context
 
 interface TireData {
   id: string;
-  dateTime: string;
+  Date: string;
+  Time: string;
   vehicleNo: string;
   TirePosition: string;
   tyrePressure: number;
@@ -46,11 +47,32 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
             ...data[date][tireNo],
           }))
         );
-        setTireData(tireDataArray);
-        setOriginalTireData(tireDataArray);
+  
+        // Filter by entered tire number
+        const filteredTireData = tireDataArray.filter((tire) => {
+          return tire.id.toLowerCase() === tireNumber.toLowerCase();
+        });
+  
+        // Sort by combined Date and Time
+        const sortedTireData = filteredTireData
+          .sort((a, b) => {
+            // Combine Date and Time fields to create a valid Date object
+            const dateA = new Date(`${a.Date} ${a.Time}`).getTime();
+            const dateB = new Date(`${b.Date} ${b.Time}`).getTime();
+            return dateB - dateA; // Descending order
+          })
+          .slice(0, 4); // Get the last 4 entries
+  
+        setTireData(sortedTireData);
+        setOriginalTireData(sortedTireData); // Save the original sorted data
       }
     });
-  }, []);
+  }, [tireNumber]);
+  
+  
+  
+  
+  
 
   const handleSearch = () => {
     if (tireNumber.trim() === '') {
@@ -70,7 +92,7 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
 
   const getTyrePressureColor = (tyrePressure: number) => {
     if (tyrePressure >= 45) {
-      return 'green';
+      return '#149414';
     } else if (tyrePressure >= 42 && tyrePressure < 45) {
       return 'yellow';
     } else if (tyrePressure < 41){
@@ -80,7 +102,7 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
 
   const getThreadDepthColor = (threadDepth: number) => {
     if (threadDepth >= 10) {
-      return 'green';
+      return '#149414';
     } else if (threadDepth >= 5 && threadDepth < 10) {
       return 'yellow';
     } else if(threadDepth <= 4){
@@ -95,11 +117,13 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
     if (tyrePressureColor === 'red' || threadDepthColor === 'red') {
       return 'BAD';
     } else if (tyrePressureColor === 'yellow' || threadDepthColor === 'yellow') {
-      return 'BETTER TO CHECK';
+      return 'CHECK';
     } else {
       return 'GOOD';
     }
   };
+
+  
 
   const ModalTable = () => (
     <Modal
@@ -108,28 +132,76 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
       transparent={true}
       animationType="slide"
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Tire Details of Your Vehicle</Text>
-          <FlatList
-            data={tireData}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.tableRow}>
-                <Text style={styles.tableCell}>{item.dateTime}</Text>
-                <Text style={styles.tableCell}>{item.vehicleNo}</Text>
-                <Text style={styles.tableCell}>{item.TirePosition}</Text>
-                <Text style={[styles.tableCell, { color: getTyrePressureColor(item.tyrePressure) }]}>{item.tyrePressure}</Text>
-                <Text style={[styles.tableCell, { color: getThreadDepthColor(item.threadDepth) }]}>{item.threadDepth}</Text>
-                <Text style={styles.tableCell}>{getTireStatus(item.tyrePressure, item.threadDepth)}</Text>
+      <View style={[styles.modalContainer, isDarkMode ? styles.darkmodalContainer: styles.lightmodalContainer]}>
+        <View style={[styles.modalContent, isDarkMode ? styles.darkmodalContent: styles.lightmodalContent]}>
+          <Text style={[styles.modalTitle, isDarkMode ? styles.darkmodalTitle: styles.lightmodalTitle]}>Tire Details</Text>
+  
+          {/* Conditionally render message if no data is found */}
+          {noDataFound ? (
+            <Text style={styles.noDataMessage}>No data found for the entered Tire Number.{"\n"}Recheck the Tire Number</Text>
+          ) : (
+            <>
+              {/* Table Header */}
+              <View style={styles.tableHeader}>
+                <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>D/M</Text>
+                <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>V No</Text>
+                <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>Position</Text>
+                <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>Pressure</Text>
+                <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>Depth</Text>
+                <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>Status</Text>
               </View>
-            )}
-          />
-          <Button title="Close" onPress={() => setIsModalOpen(false)} color="#054AAB" />
+  
+              {/* Horizontal line below header */}
+              <View style={[styles.horizontalLine, isDarkMode ? styles.darkhorizontalLine: styles.lighthorizontalLine]}/>
+  
+              <FlatList
+                data={tireData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => {
+                  const [month, day] = item.Date.split('/');
+                  const vehicleLetters = item.vehicleNo.slice(0, 2);
+                  const vehicleNumbers = item.vehicleNo.slice(2);
+  
+                  return (
+                    <View>
+                      <View style={styles.tableRow}>
+                        <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>{`${day}/${month}`}</Text>
+                        <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>
+                          {`${vehicleLetters}\n${vehicleNumbers}`}
+                        </Text>
+                        <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>{item.TirePosition}</Text>
+                        <Text
+                          style={[styles.tableCell, { color: getTyrePressureColor(item.tyrePressure) }, styles.columnSpacing]}
+                        >
+                          {item.tyrePressure}
+                        </Text>
+                        <Text
+                          style={[styles.tableCell, { color: getThreadDepthColor(item.threadDepth) }, styles.columnSpacing]}
+                        >
+                          {item.threadDepth}
+                        </Text>
+                        <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>
+                          {getTireStatus(item.tyrePressure, item.threadDepth)}
+                        </Text>
+                      </View>
+  
+                      <View  style={[styles.horizontalLine, isDarkMode ? styles.darkhorizontalLine: styles.lighthorizontalLine]} />
+                    </View>
+                  );
+                }}
+              />
+            </>
+          )}
+          <View style = {styles.buttonContainer}>
+            <TouchableOpacity onPress={() => setIsModalOpen(false)}  style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
+                <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
   );
+  
 
   return (
     <ImageBackground
@@ -154,7 +226,6 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
                   <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Search</Text>
                 </TouchableOpacity>
               </View>
-              {noDataFound && <Text style={isDarkMode ? styles.darkLabel : styles.lightLabel}>No data found for the entered Tire Number.</Text>}
             </View>
             <ModalTable />
           </View>
@@ -167,10 +238,41 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 12,
+  },
+  tableHeaderCell: {
+    fontWeight: 'bold',
+    fontSize: 13,
+    alignSelf:'center'
+  },
+  darktableHeaderCell: {
+    color:"white"
+  },
+  lighttableHeaderCell: {
+    color:"black"
+  },
   container: {
     flex: 1,
     padding: 16,
   },
+  horizontalLine: {
+    height: 1,              // Set the height of the line
+    backgroundColor: '#ccc', // Set the color of the line
+    marginVertical: 5,      // Optional: Add some vertical margin
+  },
+  darkhorizontalLine: {
+    backgroundColor: 'white', // Set the color of the line
+  },
+  lighthorizontalLine: {
+    backgroundColor: '#ccc', // Set the color of the line
+  },
+  columnSpacing: {
+    marginRight: 12, // Adjust this value as needed
+  },
+  
   darkContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
@@ -237,23 +339,54 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    width: '80%',
+    width: '93%',
+    height:'55%',
     padding: 16,
     backgroundColor: '#fff',
     borderRadius: 8,
+    borderWidth:2
+  },
+  darkmodalContainer: {
+    borderColor: 'white', 
+  },
+  lightmodalContainer: {
+    borderColor: '#000',
+  },
+  darkmodalContent: {
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    borderColor: 'white', 
+  },
+  lightmodalContent: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderColor: 'black',
   },
   modalTitle: {
-    fontSize: 18,
-    marginBottom: 16,
+    fontSize: 19,
+    marginBottom: 40,
+    alignSelf:'center'
+  },
+  darkmodalTitle: {
+    color: '#fff',
+  },
+  lightmodalTitle: {
+    color: 'black',
   },
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 8,
   },
+  
   tableCell: {
     flex: 1,
     textAlign: 'center',
+    fontSize:12,
+  },
+  darktableCell: {
+    color:"white"
+  },
+  lighttableCell: {
+    color:"black"
   },
   uploadButton: {
     padding: 10,
@@ -279,7 +412,14 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   buttonContainer:{
-    alignItems:'center'
+    alignItems:'center',
+  },
+  noDataMessage: {
+    fontSize: 12,
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 20,
+    paddingBottom:40,
   },
 });
 
