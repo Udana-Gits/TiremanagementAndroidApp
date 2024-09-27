@@ -37,7 +37,7 @@ const TireCheckList: React.FC = () => {
             const tireData = tireEntries[tireId];
             console.log(`Processing tireId: ${tireId}, tireData`);
 
-            const existingTire = tires.find(tire => tire.tireNo === tireData.tireNo);
+            const existingTire = tires.find(tire => tire.tireNo.toLowerCase() === tireData.tireNo.toLowerCase());
             if (existingTire) {
               const lastCheckedDate = dayjs(date, 'MM-DD-YYYY');
               const existingLastCheckedDate = dayjs(existingTire.lastCheckedDate, 'MM-DD-YYYY');
@@ -78,19 +78,31 @@ const TireCheckList: React.FC = () => {
   const handleCheckTire = (tire: Tire) => {
     const today = dayjs().format('MM-DD-YYYY');
     const tireRef = ref(db, `TireData/${today}/${tire.id}`);
-
+  
     update(tireRef, {
       ...tire,
       lastCheckedDate: today,
     })
       .then(() => {
+        // Update tire in place without removing it from the list
+        setUncheckedTires((prevTires) => {
+          const checkedTire = prevTires.find((t) => t.id === tire.id);
+          if (checkedTire) {
+            const updatedTire = { ...checkedTire, lastCheckedDate: today };
+            const updatedTires = prevTires.filter((t) => t.id !== tire.id);
+            updatedTires.push(updatedTire);
+            return updatedTires;
+          } else {
+            return prevTires;
+          }
+        });
         setCheckedTires((prevTires) => [...prevTires, { ...tire, lastCheckedDate: today }]);
-        setUncheckedTires((prevTires) => prevTires.filter((t) => t.id !== tire.id));
       })
       .catch((error) => {
         console.error("Error updating tire:", error);
       });
   };
+  
 
   return (
     <ImageBackground
@@ -98,24 +110,25 @@ const TireCheckList: React.FC = () => {
       style={styles.background}
     >
       <View style={[styles.container, isDarkMode ? styles.darkContainer : styles.lightContainer]}>
-        <Text style={[styles.title, isDarkMode ? styles.darkModeText : styles.lightModeText]}>Tires to Check Today</Text>
-        {uncheckedTires.length > 0 ? (
-          <FlatList
-            data={uncheckedTires}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => handleCheckTire(item)}
-                style={[styles.tireContainer, isDarkMode ? styles.darkTireContainer : styles.lightTireContainer]}
-              >
-                <Text style={[styles.tireText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>
-                  {item.tireNo} - {checkedTires.some(t => t.id === item.id) ? 'Checked Today' : 'Not Checked Yet'}
-                </Text>
-              </TouchableOpacity>
-            )}
-          />
-        ) : (
-          <Text style={[styles.noTiresText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>No tires need to be checked today.</Text>
+        <Text style={[styles.title, isDarkMode ? styles.darkModeText : styles.lightModeText]}> Check Today</Text>
+        <FlatList
+          data={[...uncheckedTires, ...checkedTires]}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => handleCheckTire(item)}
+              style={[styles.tireContainer, isDarkMode ? styles.darkTireContainer : styles.lightTireContainer]}
+            >
+              <Text style={[styles.tireText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>
+                {item.tireNo.toUpperCase()} - {checkedTires.find(t => t.id === item.id) ? 'Checked' : 'Not Checked Yet'}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+        {uncheckedTires.length === 0 && (
+          <Text style={[styles.noTiresText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>
+            No tires need to be checked today.
+          </Text>
         )}
       </View>
     </ImageBackground>
@@ -135,7 +148,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal: 20,
     borderRadius: 10,
-    marginTop:30,
+    marginTop: 30,
   },
   darkContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',

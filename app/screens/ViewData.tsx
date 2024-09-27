@@ -12,6 +12,7 @@ interface TireData {
   Time: string;
   vehicleNo: string;
   TirePosition: string;
+  tirestatus: string;
   tyrePressure: number;
   threadDepth: number;
 }
@@ -181,7 +182,7 @@ const ViewData: React.FC<ViewDataProps> = ({ navigation }) => {
                           {item.threadDepth}
                         </Text>
                         <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>
-                          {getTireStatus(item.tyrePressure, item.threadDepth)}
+                          {item.tirestatus.toUpperCase()}
                         </Text>
                       </View>
   
@@ -415,7 +416,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   noDataMessage: {
-    fontSize: 12,
+    fontSize: 16,
     color: 'red',
     textAlign: 'center',
     marginVertical: 20,

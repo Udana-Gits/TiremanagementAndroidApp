@@ -8,11 +8,13 @@ import { useDarkMode } from './DarkModeContext'; // Import dark mode context
 
 interface TireData {
   id: string;
-  dateTime: string;
+  Date: string;
+  Time: string;
   vehicleNo: string;
   TirePosition: string;
   tyrePressure: number;
   threadDepth: number;
+  tireNo: string;
 }
 
 const VehicleData: React.FC = () => {
@@ -58,14 +60,27 @@ const VehicleData: React.FC = () => {
       setTireData(originalTireData);
       return;
     }
-
+  
     const filteredData = originalTireData.filter((tire) => {
       const vehicleNo = tire.vehicleNo || '';
       return vehicleNo.toLowerCase() === vehicleNumber.toLowerCase();
     });
-
-    setNoDataFound(filteredData.length === 0);
-    setTireData(filteredData);
+  
+    // Group tire data by position and get the latest date for each position
+    const groupedData = filteredData.reduce((acc: Record<string, TireData>, tire) => {
+      const position = tire.TirePosition;
+      const date = tire.Date;
+      if (!acc[position] || date > acc[position].Date) {
+        acc[position] = tire;
+      }
+      return acc;
+    }, {});
+  
+    // Convert the grouped data back to an array
+    const latestData = Object.values(groupedData);
+  
+    setNoDataFound(latestData.length === 0);
+    setTireData(latestData);
     setIsModalOpen(true);
   };
 
@@ -109,26 +124,59 @@ const VehicleData: React.FC = () => {
       transparent={true}
       animationType="slide"
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Tire Details of Your Vehicle</Text>
-          <FlatList
-            data={tireData}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.tableRow}>
-                <Text style={styles.tableCell}>{item.dateTime}</Text>
-                <Text style={styles.tableCell}>{item.vehicleNo}</Text>
-                <Text style={styles.tableCell}>{item.TirePosition}</Text>
-                <Text style={[styles.tableCell, { color: getTyrePressureColor(item.tyrePressure) }]}>{item.tyrePressure}</Text>
-                <Text style={[styles.tableCell, { color: getThreadDepthColor(item.threadDepth) }]}>{item.threadDepth}</Text>
-                <Text style={styles.tableCell}>{getTireStatus(item.tyrePressure, item.threadDepth)}</Text>
-              </View>
-            )}
-          />
-          <Button title="Close" onPress={() => setIsModalOpen(false)} color="#054AAB" />
+    <View style={[styles.modalContainer, isDarkMode ? styles.darkmodalContainer: styles.lightmodalContainer]}>
+      <View style={[styles.modalContent, isDarkMode ? styles.darkmodalContent: styles.lightmodalContent]}>
+        <Text style={[styles.modalTitle, isDarkMode ? styles.darkmodalTitle: styles.lightmodalTitle]}>Tire Details of Vehicle  {vehicleNumber.slice(0, 2).toUpperCase() + vehicleNumber.slice(2)}</Text>
+
+        {/* Conditionally render message if no data is found */}
+        {noDataFound ? (
+          <Text style={styles.noDataMessage}>No data found for the entered Vehicle Number.{"\n"}Recheck the Vehicle Number</Text>
+        ) : (
+          <>
+            {/* Table Header */}
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>D/M</Text>
+              <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>T No</Text>
+              <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>Position</Text>
+              <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>Pressure</Text>
+              <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>Depth</Text>
+              <Text style={[styles.tableHeaderCell, isDarkMode ? styles.darktableHeaderCell: styles.lighttableHeaderCell , styles.columnSpacing]}>Status</Text>
+            </View>
+
+            {/* Horizontal line below header */}
+            <View style={[styles.horizontalLine, isDarkMode ? styles.darkhorizontalLine: styles.lighthorizontalLine]}/>
+
+            <FlatList
+              data={tireData}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
+                const dateParts = item.Date.split('/');
+                const formattedDate = `${dateParts[1]}/${dateParts[0]}`;
+
+                return (
+                  <View>
+                    <View style={styles.tableRow}>
+                      <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>{formattedDate}</Text>
+                      <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>{item.tireNo}</Text>
+                      <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>{item.TirePosition}</Text>
+                      <Text style={[styles.tableCell, { color: getTyrePressureColor(item.tyrePressure) }]}>{item.tyrePressure}</Text>
+                      <Text style={[styles.tableCell, { color: getThreadDepthColor(item.threadDepth) }]}>{item.threadDepth}</Text>
+                      <Text style={[styles.tableCell, isDarkMode ? styles.darktableCell: styles.lighttableCell, styles.columnSpacing]}>{getTireStatus(item.tyrePressure, item.threadDepth)}</Text>
+                    </View>
+                    <View  style={[styles.horizontalLine, isDarkMode ? styles.darkhorizontalLine: styles.lighthorizontalLine]} />
+                  </View>
+                );
+              }}
+            />
+          </>
+        )}
+        <View style = {styles.buttonContainer}>
+          <TouchableOpacity onPress={() => setIsModalOpen(false)}  style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
+              <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Close</Text>
+          </TouchableOpacity>
         </View>
       </View>
+    </View>
     </Modal>
   );
 
@@ -155,7 +203,6 @@ const VehicleData: React.FC = () => {
                   <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Search</Text>
                 </TouchableOpacity>
               </View>
-            {noDataFound && <Text>No data found for the entered vehicle number.</Text>}
             </View>
             <ModalTable />
           </View>
@@ -216,6 +263,36 @@ const styles = StyleSheet.create({
   lightLabel: {
     color: '#000',
   },
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 12,
+  },
+  tableHeaderCell: {
+    fontWeight: 'bold',
+    fontSize: 13,
+    alignSelf:'center'
+  },
+  darktableHeaderCell: {
+    color:"white"
+  },
+  lighttableHeaderCell: {
+    color:"black"
+  },
+  horizontalLine: {
+    height: 1,              // Set the height of the line
+    backgroundColor: '#ccc', // Set the color of the line
+    marginVertical: 5,      // Optional: Add some vertical margin
+  },
+  darkhorizontalLine: {
+    backgroundColor: 'white', // Set the color of the line
+  },
+  lighthorizontalLine: {
+    backgroundColor: '#ccc', // Set the color of the line
+  },
+  columnSpacing: {
+    marginRight: 12, // Adjust this value as needed
+  },
   input: {
     borderWidth: 1,
     borderRadius: 4,
@@ -267,15 +344,37 @@ const styles = StyleSheet.create({
     marginTop:60,
   },
   modalContent: {
-    width: '90%',
+    width: '93%',
+    
     padding: 16,
     backgroundColor: '#fff',
     borderRadius: 8,
+    borderWidth:2
+  },
+  darkmodalContent: {
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    borderColor: 'white', 
+  },
+  lightmodalContent: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderColor: 'black',
+  },
+  darkmodalContainer: {
+    borderColor: 'white', 
+  },
+  lightmodalContainer: {
+    borderColor: '#000',
   },
   modalTitle: {
-    fontSize: 18,
-    marginBottom: 16,
+    fontSize: 19,
+    marginBottom: 40,
     alignSelf:'center'
+  },
+  darkmodalTitle: {
+    color: '#fff',
+  },
+  lightmodalTitle: {
+    color: 'black',
   },
   tableRow: {
     flexDirection: 'row',
@@ -285,6 +384,20 @@ const styles = StyleSheet.create({
   tableCell: {
     flex: 1,
     textAlign: 'center',
+    fontSize:12,
+  },
+  darktableCell: {
+    color:"white"
+  },
+  lighttableCell: {
+    color:"black"
+  },
+  noDataMessage: {
+    fontSize: 16,
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 20,
+    paddingBottom:40,
   },
 });
 
