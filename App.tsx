@@ -14,6 +14,7 @@ import TireCheckList from './app/screens/TireCheckList';
 import TireManagement from './app/screens/TireManagement';
 import VehicleManagement from './app/screens/VehicleManagement';
 import Administrative from './app/screens/Administrative';
+import Settings from './app/screens/Settings';
 import { DarkModeProvider } from './app/screens/DarkModeContext';
 
 
@@ -31,6 +32,7 @@ type RootStackParamList = {
   ViewVehicle: undefined;
   ProfileEdit: undefined;
   TireCheckList: undefined;
+  Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -52,7 +54,7 @@ export default function App() {
           <Stack.Screen options={{ headerShown: false }} name="TireManagement" component={TireManagement} />
           <Stack.Screen options={{ headerShown: false }} name="VehicleManagement" component={VehicleManagement} />
           <Stack.Screen options={{ headerShown: false }} name="Administrative" component={Administrative} />
-
+          <Stack.Screen options={{ headerShown: false }} name="Settings" component={Settings} />
         </Stack.Navigator>
       </NavigationContainer>
     </DarkModeProvider>

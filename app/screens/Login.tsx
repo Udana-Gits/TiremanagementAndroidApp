@@ -160,9 +160,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   togglebutton: {
-    position: 'absolute',
-    top: 57,
-    left: 320,
+    position: 'relative',
   },
   logoImage: {
     width: 250,
