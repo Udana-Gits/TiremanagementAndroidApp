@@ -21,7 +21,10 @@ const VehicleData: React.FC = () => {
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [tireData, setTireData] = useState<TireData[]>([]);
   const [originalTireData, setOriginalTireData] = useState<TireData[]>([]);
+
   const [vehicleNumber, setVehicleNumber] = useState<string>('');
+  const [vehicleNumberError, setVehicleNumberError] = useState<string>('');
+
   const [noDataFound, setNoDataFound] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { isDarkMode } = useDarkMode(); // Use dark mode context
@@ -191,13 +194,29 @@ const VehicleData: React.FC = () => {
           <View style={styles.innerContainer}>
             <View  style={[styles.searchContainer, isDarkMode ? styles.darksearchContainer : styles.lightsearchContainer]}>
                 <Text style={[styles.label, isDarkMode ? styles.darkLabel : styles.lightLabel]}>Vehicle Number</Text>
-                <TextInput
-                  style={[styles.input, isDarkMode ? styles.darkInput : styles.lightInput]}
-                  placeholder="Eg: V0006"
-                  placeholderTextColor={isDarkMode ? '#ccc' : '#888'}
-                  value={vehicleNumber}
-                  onChangeText={(text) => setVehicleNumber(text)}
-                />
+                <View>
+                  <TextInput
+                    style={[styles.input, isDarkMode ? styles.darkInput : styles.lightInput]}
+                    placeholder="Eg: PM0006"
+                    placeholderTextColor={isDarkMode ? '#ccc' : '#888'}
+                    value={vehicleNumber}
+                    onChangeText={(text) => {
+                      const vehicleNumberRegex = /^[A-Za-z]{2}\d{4}$/;
+                      if (!vehicleNumberRegex.test(text)) {
+                        setVehicleNumberError('Vehicle number must be with two letters followed by 4 digits');
+                      } else {
+                        setVehicleNumberError('');
+                      }
+                      setVehicleNumber(text);
+                    }}
+                  />
+                  {vehicleNumberError && (
+                    <Text style={{ color: 'red', fontSize: 14, marginBottom: 8, alignSelf:'center'}}>
+                      {vehicleNumberError}
+                    </Text>
+                  )}
+                </View>
+                
                 <View style = {styles.buttonContainer}>
                 <TouchableOpacity onPress={handleSearch} style={[styles.uploadButton, isDarkMode ? styles.darkuploadButton : styles.lightuploadButton]}>
                   <Text style={[styles.uploadButtonText, isDarkMode ? styles.darkuploadButtonText : styles.lightuploadButtonText]}>Search</Text>
@@ -399,6 +418,8 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     paddingBottom:40,
   },
+
+  
 });
 
 export default VehicleData;
