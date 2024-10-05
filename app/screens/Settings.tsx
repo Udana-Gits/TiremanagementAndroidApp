@@ -6,7 +6,7 @@ import { translations } from './translations';
 interface SettingsProps {}
 
 const Settings: React.FC<SettingsProps> = () => {
-  const [language, setLanguage] = useState<'en' | 'fr'>('en'); // default language is English
+  const [language, setLanguage] = useState<'en' | 'Si'>('en'); // default language is English
   const { isDarkMode } = useDarkMode();
 
   return (
@@ -19,9 +19,9 @@ const Settings: React.FC<SettingsProps> = () => {
         <Text style={styles.languageToggleLabel}>
           Change language : 
         </Text>
-        <TouchableOpacity onPress={() => setLanguage(language === 'en' ? 'fr' : 'en')}>
+        <TouchableOpacity onPress={() => setLanguage(language === 'en' ? 'Si' : 'en')}>
           <Text style={[styles.languageToggleText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>
-            {language === 'en' ? 'English' : 'Français'}
+            {language === 'en' ? 'English' : 'Sinhala'}
           </Text>
         </TouchableOpacity>
       </View>
