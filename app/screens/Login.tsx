@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image} from 'react-native';
 import { auth } from '../../FirebaseConfig';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
@@ -7,6 +7,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import CustomSwitch from './CustomSwitch';
 import { useDarkMode } from './DarkModeContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckBox from '@react-native-community/checkbox';
+import CustomCheckbox from './CustomCheckbox';
+
+
 
 
 type RootStackParamList = {
@@ -25,19 +30,51 @@ const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const { isDarkMode, setIsDarkMode } = useDarkMode();
 
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
+
+
+
+  useEffect(() => {
+    checkRememberedUser();
+  }, []);
+  
+  // Check if a user is remembered and auto-login
+  const checkRememberedUser = async () => {
+    const storedEmail = await AsyncStorage.getItem('rememberedEmail');
+    const rememberMeFlag = await AsyncStorage.getItem('rememberMe');
+    if (storedEmail && rememberMeFlag === 'true') {
+      setEmail(storedEmail);
+      autoSignIn(storedEmail);
+    }
+  };
+
+  const autoSignIn = async (email: string) => {
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      const userOccupation = await getUserOccupation(response.user.uid);
+      navigateToHome(userOccupation);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
+  // Sign in function
   const signIn = async () => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
       const userOccupation = await getUserOccupation(response.user.uid);
-      if (userOccupation === 'Driver') {
-        navigation.navigate('DriverHome');
-      } else if (userOccupation === 'Employee') {
-        navigation.navigate('EmployeeHome');
-      } else if (userOccupation === 'Admin') {
-        navigation.navigate('AdminHome');
+
+      if (rememberMe) {
+        await AsyncStorage.setItem('rememberedEmail', email);
+        await AsyncStorage.setItem('rememberMe', 'true');
+      } else {
+        await AsyncStorage.removeItem('rememberedEmail');
+        await AsyncStorage.setItem('rememberMe', 'false');
       }
+
+      navigateToHome(userOccupation);
     } catch (error) {
       console.error(error);
       alert('Invalid email or password. Please try again.');
@@ -45,6 +82,19 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // Navigate to the appropriate home screen
+  const navigateToHome = (occupation: string | null) => {
+    if (occupation === 'Driver') {
+      navigation.navigate('DriverHome');
+    } else if (occupation === 'Employee') {
+      navigation.navigate('EmployeeHome');
+    } else if (occupation === 'Admin') {
+      navigation.navigate('AdminHome');
+    }
+  };
+
+  
 
   const handleForgotPassword = async () => {
     if (email) {
@@ -116,6 +166,9 @@ const Login: React.FC = () => {
                 <TouchableOpacity onPress={handleForgotPassword}>
                   <Text style={[styles.forgotPasswordText, isDarkMode ? styles.darkText : styles.lightText]}>Forgot Password?</Text>
                 </TouchableOpacity>
+              </View>
+              <View style={styles.rememberMeContainer}>
+              <CustomCheckbox />
               </View>
               {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
@@ -269,4 +322,9 @@ const styles = StyleSheet.create({
   lightbuttonText: {
     color: 'white',
   },
+  rememberMeContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  
 });

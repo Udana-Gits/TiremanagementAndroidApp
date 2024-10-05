@@ -25,6 +25,7 @@ const EnterData = () => {
   const [selectedOption1, setSelectedOption1] = useState<TireOption>('');
   const [selectedOption2, setSelectedOption2] = useState<TireOption>('');
   const [selectedOption3, setSelectedOption3] = useState<TireOption>('');
+  
   const [date, setDate] = useState(() => {
     const today = new Date();
     const dd = String(today.getDate()).padStart(2, '0');
@@ -32,6 +33,7 @@ const EnterData = () => {
     const yyyy = today.getFullYear();
     return `${dd}-${mm}-${yyyy}`;
   });
+  
   const [showPopup, setShowPopup] = useState(false);
   const [enteredData, setEnteredData] = useState('');
   const { isDarkMode } = useDarkMode();

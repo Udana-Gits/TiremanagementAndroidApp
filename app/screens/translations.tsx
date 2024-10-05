@@ -2,7 +2,7 @@ export const translations = {
     en: {
       settings: 'Settings',
     },
-    fr: {
+    Si: {
       settings: 'සැකසුම්',
     },
   };
