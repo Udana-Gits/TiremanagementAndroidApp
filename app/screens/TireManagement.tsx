@@ -42,9 +42,9 @@ const TireManagement: React.FC<Props> = ({ navigation }) => {
                         <Image source={isDarkMode ? require('./images/viewdatadark.png') : require('./images/viewdatalight.png')} style={styles.buttonImage} />
                         <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>View Tire Data</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton]} onPress={() => navigation.navigate('TirePerformance')}>
-                        <Image source={isDarkMode ? require('./images/viewdatadark.png') : require('./images/viewdatalight.png')} style={styles.buttonImage} />
-                        <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>Tire Performance</Text>
+                        <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton]} onPress={() => navigation.navigate('TireCheckList')}>
+                        <Image source={isDarkMode ? require('./images/tododark.png') : require('./images/todolight.png')} style={styles.buttonImage} />
+                        <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}> Tire Check List</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

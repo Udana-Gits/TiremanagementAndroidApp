@@ -4,6 +4,8 @@ import { auth, db } from '../../FirebaseConfig';
 import { get, ref } from 'firebase/database';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useDarkMode } from './DarkModeContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import {
   View,
@@ -57,14 +59,20 @@ const Navbar: React.FC<Props> = ({ authuser }) => {
     fetchProfilePicture();
   }, [authuser]);
 
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        navigation.navigate('Login');
-      })
-      .catch((error) => {
-        console.error('Error signing out: ', error);
-      });
+  const handleSignOut = async () => {
+    try {
+      // Clear the stored email and rememberMe flag
+      await AsyncStorage.removeItem('rememberedEmail');
+      await AsyncStorage.setItem('rememberMe', 'false');
+  
+      // Sign out from Firebase auth
+      await signOut(auth);
+  
+      // Navigate back to the Login screen
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error signing out: ', error);
+    }
   };
 
   const editProfile = () => {

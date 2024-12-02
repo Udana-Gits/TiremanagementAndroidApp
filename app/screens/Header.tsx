@@ -6,6 +6,8 @@ import { auth, db } from '../../FirebaseConfig';
 import { ref, get } from 'firebase/database';
 import { useDarkMode } from './DarkModeContext';
 import CustomSwitch from './CustomSwitch';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 type AuthUser = {
   uid: string;
@@ -16,6 +18,7 @@ type AuthUser = {
 type RootStackParamList = {
   Login: undefined;
   ProfileEdit: undefined;
+  Settings: undefined;
 };
 
 type Props = {
@@ -68,18 +71,27 @@ const Header: React.FC<Props> = ({ authuser }) => {
     }
   };
 
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        navigation.navigate('Login');
-      })
-      .catch((error) => {
-        console.error('Error signing out: ', error);
-      });
+  const handleSignOut = async () => {
+    try {
+      // Clear the stored email and rememberMe flag
+      await AsyncStorage.removeItem('rememberedEmail');
+      await AsyncStorage.setItem('rememberMe', 'false');
+  
+      // Sign out from Firebase auth
+      await signOut(auth);
+  
+      // Navigate back to the Login screen
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error signing out: ', error);
+    }
   };
 
   const editProfile = () => {
     navigation.navigate('ProfileEdit');
+  };
+  const Settings = () => {
+    navigation.navigate('Settings');
   };
 
   return (
@@ -108,7 +120,7 @@ const Header: React.FC<Props> = ({ authuser }) => {
         </View>            
         <View style={styles.profileContainer}>
           {profilePicture && (            
-            <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
+            <Image source={{ uri: profilePicture }}  style={[styles.profilePicture, isDarkMode ? styles.darkprofilePicture : styles.lightprofilePicture]}/>
           )}
           <Text style={[styles.userName, isDarkMode ? styles.userNamedark : styles.userNamelight]}>
             {firstName} {lastName}
@@ -131,6 +143,12 @@ const Header: React.FC<Props> = ({ authuser }) => {
             Edit Profile
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.menuButton} onPress={Settings}>
+          <Image source={isDarkMode ? require('./images/editprofiledark.png') : require('./images/editprofilelight.png')} style={styles.toggleimage}/>
+          <Text style={[styles.menuButtonText, isDarkMode ? styles.menuButtonTextdark : styles.menuButtonTextlight]}>
+            App Settings
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.menuButton} onPress={handleSignOut}>
           <Image source={isDarkMode ? require('./images/signoutdark.png') : require('./images/signoutlight.png')} style={styles.toggleimage}/>
           <Text style={[styles.menuButtonText, isDarkMode ? styles.menuButtonTextdark : styles.menuButtonTextlight]}>
@@ -150,7 +168,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   toggleButton: {
-    marginRight: 10,
+    
   },
   toggleimage:{
     marginRight: 10,
@@ -162,7 +180,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   logoContainer: {
-    alignItems: 'center',
+    alignItems: 'baseline',
   },
 
   logoImage: {
@@ -184,7 +202,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     height: Dimensions.get('window').height,
-    width: 350,
+    width: (Dimensions.get('window').width)*(3.25/4),
     borderRadius: 9,
     padding: 10,
     shadowColor: '#000',
@@ -202,13 +220,22 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     marginBottom: 20,
-    alignItems: 'center',
+    paddingLeft:20,
   },
   profilePicture: {
-    width: 150,
-    height: 150,
+    width: 175,
+    height: 175,
     borderRadius: 90,
     marginBottom: 10,
+    borderWidth: 2,
+    borderStyle: 'solid', // You need to specify the border style
+    borderColor: 'black',
+  },
+  darkprofilePicture: {
+    borderColor: 'white',
+  },
+  lightprofilePicture: {
+    borderColor: 'black',
   },
   userName: {
     fontSize: 25,

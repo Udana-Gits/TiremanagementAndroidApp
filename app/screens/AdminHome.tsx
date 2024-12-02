@@ -80,11 +80,7 @@ const AdminHome: React.FC<Props> = ({ navigation }) => {
                             <Image source={isDarkMode ? require('./images/vehiclemanagedark.png') : require('./images/vehiclemanagelight.png')} style={styles.buttonImage} />
                             <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>Vehicle Management</Text>
                         </TouchableOpacity>
-
-                        <TouchableOpacity style={[styles.button, isDarkMode ? styles.darkbutton : styles.lightbutton]} onPress={() => navigation.navigate('Administrative')}>
-                            <Image source={isDarkMode ? require('./images/administrativedark.png') : require('./images/administrativelight.png')} style={styles.buttonImage} />
-                            <Text style={[styles.buttonText, isDarkMode ? styles.darkModeText : styles.lightModeText]}>Administrative</Text>
-                        </TouchableOpacity>
+                                                
                     </View>
                 </View>
                 <Footer />
